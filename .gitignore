@@ -1,0 +1,45 @@
+# =========================================================================
+# Arquivo .gitignore para um projeto Full-Stack (Node.js + React)
+# =========================================================================
+
+# Dependências
+# Ignora as pastas de dependências em qualquer lugar do projeto.
+# Essencial para manter o repositório leve.
+**/node_modules
+
+# Arquivos de Build
+# Ignora os arquivos gerados no processo de build do frontend e backend.
+/frontend/build
+/frontend/dist
+# (Adicione a linha abaixo quando criar o backend)
+# /backend/dist
+
+# Logs
+# Ignora arquivos de log que podem ser gerados durante a execução ou debug.
+logs
+*.log
+npm-debug.log*
+yarn-error.log
+
+# Variáveis de Ambiente
+# CRÍTICO: Nunca envie suas senhas, chaves de API ou strings de conexão.
+# O arquivo .env contém informações sensíveis.
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# Arquivos de IDEs e Editores
+# Ignora configurações específicas do ambiente de desenvolvimento de cada pessoa.
+.vscode/
+.idea/
+
+# Arquivos de Sistema Operacional
+# Ignora arquivos gerados automaticamente pelo sistema (macOS, Windows, Linux).
+.DS_Store
+Thumbs.db
+*~
+
+# Testes
+# Ignora relatórios de cobertura de testes.
+/coverage
