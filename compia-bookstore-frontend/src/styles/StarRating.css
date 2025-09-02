@@ -1,0 +1,32 @@
+.star-rating-container {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    margin-bottom: 12px;
+}
+
+.star {
+    font-size: 1.2rem;
+    line-height: 1;
+}
+
+.star.empty {
+    color: #e0e0e0;
+}
+
+.star.filled {
+    color: #ffc107;
+}
+
+.rating-value {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #212529;
+    margin-left: 8px;
+}
+
+.reviews-count{
+    font-size: 0.9rem;
+    color: #6c757d;
+    margin-left: 4px;
+}
