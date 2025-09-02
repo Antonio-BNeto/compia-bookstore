@@ -1,35 +1,36 @@
-import React from "react";
-import { Routes, Route, Link } from "react-router-dom";
+import { Routes, Route } from 'react-router-dom';
 
-import Home from "./pages/Home";
-import ProductDetail from "./pages/ProductDetail";
-import Cart from "./pages/Cart";
-import Checkout from "./pages/Checkout";
-import AdminPanel from "./pages/AdimPanel";
+// Importe o Layout
+import Layout from './components/layout/Layout';
+
+// Importe suas páginas
+import HomePage from './pages/HomePage';
+import ProductDetailPage from './pages/ProductDetailPage';
+import CartPage from './pages/CartPage';
+import CheckoutPage from './pages/CheckoutPage';
+import AdminDashboardPage from './pages/admin/DashboardPage'; // Exemplo de rota de admin
 
 function App() {
   return (
-    <div>
-     <header style={{ padding: "1rem", background: "#222", color: "white" }}>
-        <h1>📚 COMPIA Bookstore</h1>
-        <nav>
-          <Link to="/" style={{ margin: "0 10px", color: "white" }}>Home</Link>
-          <Link to="/carrinho" style={{ margin: "0 10px", color: "white" }}>Carrinho</Link>
-          <Link to="/checkout" style={{ margin: "0 10px", color: "white" }}>Checkout</Link>
-          <Link to="/painel" style={{ margin: "0 10px", color: "white" }}>Admin</Link>
-        </nav>
-      </header>
+    <Routes>
+        {/* Todas as rotas agora estão dentro de um Layout */}
+        <Route path="/" element={<Layout />}>
+          {/* A página inicial será renderizada no <Outlet /> do Layout */}
+          <Route index element={<HomePage />} />
+          
+          {/* Outras páginas que usam o mesmo Layout */}
+          <Route path="produto/:id" element={<ProductDetailPage />} />
+          <Route path="carrinho" element={<CartPage />} />
+          <Route path="checkout" element={<CheckoutPage />} />
+          
+          {/* Exemplo de como agrupar rotas de admin */}
+          <Route path="admin" element={<AdminDashboardPage />} />
+          {/* <Route path="admin/produtos" element={<AdminProductsPage />} /> */}
 
-      <main style={{ padding: "2rem" }}>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/produto/:id" element={<ProductDetail />} />
-          <Route path="/carrinho" element={<Cart />} />
-          <Route path="/checkout" element={<Checkout />} />
-          <Route path="/painel" element={<AdminPanel />} />
-        </Routes>
-      </main>
-    </div>
+          {/* Adicione uma rota para "página não encontrada" */}
+          <Route path="*" element={<h2>Página não encontrada!</h2>} />
+        </Route>
+      </Routes>
   );
 }
 

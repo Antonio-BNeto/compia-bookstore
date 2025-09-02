@@ -1,0 +1,47 @@
+.main-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: #222;
+  color: white;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+.logo-link {
+  text-decoration: none;
+  color: white;
+}
+.logo-link h1 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+.main-nav a {
+  margin: 0 15px;
+  color: #ddd;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s;
+}
+.main-nav a:hover {
+  color: white;
+}
+.header-cart a {
+  position: relative;
+  color: white;
+  text-decoration: none;
+}
+.cart-count {
+  position: absolute;
+  top: -8px;
+  right: -12px;
+  background-color: #007bff;
+  color: white;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
