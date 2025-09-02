@@ -1,0 +1,91 @@
+.filter-sidebar {
+    width: 280px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 1.5rem;
+    background-color: #fff;
+    height: fit-content; /* Faz a altura se ajustar ao conteúdo */
+    font-family: 'Inter', sans-serif;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.filter-sidebar h3 {
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Espaço entre o ícone e o texto */
+    font-size: 1.25rem;
+    color: #333;
+}
+
+.filter-section {
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.filter-section:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.filter-section h4 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #212529;
+}
+
+.filter-option {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.filter-option:last-child {
+    margin-bottom: 0;
+}
+
+.filter-option input[type="checkbox"] {
+    /* Esconde o checkbox padrão */
+    appearance: none;
+    -webkit-appearance: none;
+    
+    /* Cria um novo checkbox customizado */
+    width: 18px;
+    height: 18px;
+    border: 2px solid #adb5bd;
+    border-radius: 4px;
+    margin-right: 0.75rem;
+    cursor: pointer;
+    position: relative;
+    top: -1px;
+    transition: background-color 0.2s, border-color 0.2s;
+}
+
+/* Estilo do check (✓) que aparecerá quando marcado */
+.filter-option input[type="checkbox"]:checked {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.filter-option input[type="checkbox"]:checked::after {
+    content: '\2713'; /* Código unicode para o check ✓ */
+    font-size: 14px;
+    color: white;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+
+.filter-option label {
+    font-size: 0.9rem;
+    color: #495057;
+    cursor: pointer;
+    flex: 1; /* Permite que o label ocupe o espaço restante */
+}
