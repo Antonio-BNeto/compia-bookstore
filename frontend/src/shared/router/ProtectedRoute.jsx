@@ -1,5 +1,5 @@
 import { Navigate, Outlet } from "react-router-dom";
-import { useAuth } from "../../contexts/AuthContext";
+import { useAuth } from "../../contexts/auth/AuthContext";
 
 export function ProtectedRoute({ role }) {
   const { user } = useAuth();
@@ -9,7 +9,7 @@ export function ProtectedRoute({ role }) {
   }
 
   if (role && user.role !== role) {
-    return <Navigate to="/home" replace />;
+    return <Navigate to="/" replace />;
   }
 
   return <Outlet />;

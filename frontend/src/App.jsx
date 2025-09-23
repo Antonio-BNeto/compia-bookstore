@@ -1,10 +1,21 @@
+import { AuthProvider } from "./contexts/auth/AuthContext";
+import { ProductProvider } from "./contexts/product/ProductContext";
+import { CartProvider } from "./contexts/cart/CartContext";
+import { OrderProvider } from "./contexts/order/OrderContext";
 import RoutesWrapper from "./routes";
-import { AuthProvider } from "./contexts/AuthContext";
 
-export default function App() {
+function App() {
   return (
     <AuthProvider>
-      <RoutesWrapper />
+      <ProductProvider>
+        <CartProvider>
+          <OrderProvider>
+            <RoutesWrapper />
+          </OrderProvider>
+        </CartProvider>
+      </ProductProvider>
     </AuthProvider>
   );
 }
+
+export default App;

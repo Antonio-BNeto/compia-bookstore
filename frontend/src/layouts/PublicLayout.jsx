@@ -12,7 +12,7 @@ export default function PublicLayout() {
                 <nav className="container mx-auto px-4 py-3 flex justify-between items-center">
                     {/* Logo */}
                     <Link 
-                        to="/home" 
+                        to="/" 
                         className="flex items-center gap-2 text-xl font-bold text-primary"
                     >
                         <BookOpen className="h-7 w-7" />
@@ -22,7 +22,7 @@ export default function PublicLayout() {
                     {/* Desktop Navigation */}
                     <div className="hidden md:flex items-center gap-6">
                         <Link 
-                            to="/home" 
+                            to="/" 
                             className="font-medium hover:text-primary transition-colors"
                         >
                             Home
