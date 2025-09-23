@@ -14,6 +14,7 @@ const ProductDetailsPage = lazy(() => import("./pages/public/ProductDetails"));
 const CartPage = lazy(() => import("./pages/public/Cart"));
 const CheckoutPage = lazy(() => import("./pages/public/Checkout"));
 const OrdersPage = lazy(() => import("./pages/public/Orders"));
+const ProductsPage = lazy(() => import("./pages/public/Products")); // <- nova página
 
 // Páginas de autenticação
 const LoginPage = lazy(() => import("./pages/auth/Login"));
@@ -43,6 +44,11 @@ export default function RoutesWrapper() {
             <Route path="/cart" element={<CartPage />} />
             <Route path="/checkout" element={<CheckoutPage />} />
             <Route path="/orders" element={<OrdersPage />} />
+
+            {/* Página de produtos - precisa estar logado */}
+            <Route element={<ProtectedRoute />}>
+              <Route path="/products" element={<ProductsPage />} />
+            </Route>
           </Route>
 
           {/* Rotas de autenticação */}

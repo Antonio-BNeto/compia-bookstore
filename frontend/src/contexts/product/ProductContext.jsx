@@ -1,34 +1,50 @@
 /* eslint-disable react-refresh/only-export-components */
-import { createContext, useState } from "react";
+import { createContext, useContext, useState } from "react";
+import { mockProducts } from "../../data/products";
 
 export const ProductContext = createContext(null);
 
-const mockProducts = [
-  {
-    id: 1,
-    title: "Introdução à Inteligência Artificial",
-    author: "Maria Silva",
-    price: 89.90,
-    image: "/assets/books/ia.jpg",
-    category: "Inteligência Artificial"
-  },
-  {
-    id: 2,
-    title: "Algoritmos Modernos",
-    author: "João Souza",
-    price: 120.00,
-    image: "/assets/books/algorithms.png",
-    category: "Programação"
-  }
-];
-
 export function ProductProvider({ children }) {
-  const [products] = useState(mockProducts);
+  
+  const [products, setProducts] = useState(mockProducts);
+
+
+  const addProduct = (productData) => {
+    const newProduct = {
+      id: Date.now(),
+      ...productData,
+    };
+    setProducts((prevProducts) => [...prevProducts, newProduct]);
+  };
+
+  const updateProduct = (productId, updatedData) => {
+    setProducts((prevProducts) =>
+      prevProducts.map((p) => (p.id === productId ? { ...p, ...updatedData } : p))
+    );
+  };
+  
+  const deleteProduct = (productId) => {
+    setProducts((prevProducts) => prevProducts.filter((p) => p.id !== productId));
+  };
+  
+  const value = {
+    products,
+    addProduct,
+    updateProduct,
+    deleteProduct,
+  };
 
   return (
-    <ProductContext.Provider value={{ products }}>
+    <ProductContext.Provider value={value}>
       {children}
     </ProductContext.Provider>
   );
 }
 
+export function useProducts() {
+  const context = useContext(ProductContext);
+  if (context === undefined) {
+    throw new Error('useProducts must be used within a ProductProvider');
+  }
+  return context;
+}
