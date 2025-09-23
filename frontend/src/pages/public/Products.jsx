@@ -1,74 +1,114 @@
-import { useState } from "react";
-import { useProducts } from "../../contexts/product/useProduct";
-import ProductFilters from "../../components/products/ProductFilters";
-import ProductList from "../../components/products/ProductList";
+import { useState, useMemo } from 'react';
+import ProductFilters from '../../components/products/ProductFilters';
+import ProductList from '../../components/products/ProductList';
+import Button from '../../components/ui/Button';
+import Modal from '../../components/ui/Modal';
+import { Filter } from 'lucide-react';
+import { useProducts } from '../../contexts/product/ProductContext';
 
-export default function Products() {
+export default function ProductsPage() {
   const { products } = useProducts();
+  const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
 
-  const [search, setSearch] = useState("");
-  const [category, setCategory] = useState("all");
-  const [minPrice, setMinPrice] = useState("");
-  const [maxPrice, setMaxPrice] = useState("");
-  const [author, setAuthor] = useState("all");
-  const [type, setType] = useState("all");
+  // --- 1. ESTADOS PARA OS FILTROS ---
+  const [search, setSearch] = useState('');
+  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [selectedAuthors, setSelectedAuthors] = useState([]);
+  const [selectedTypes, setSelectedTypes] = useState([]);
+  const [priceRange, setPriceRange] = useState(''); // Estado de preço atualizado
 
-  // gera listas únicas para filtros
-  const authorsAvailable = [...new Set(products.map((p) => p.author))];
-  const typesAvailable = ["Físico", "E-book"]; // já que seu mock sempre tem esses dois
+  // --- 2. LÓGICA PARA EXTRAIR OPÇÕES DE FILTRO DINAMICAMENTE ---
+  const allCategories = useMemo(() => [...new Set(products.map(p => p.category))], [products]);
+  const allAuthors = useMemo(() => [...new Set(products.map(p => p.author))], [products]);
+  const allTypes = useMemo(() => [...new Set(products.flatMap(p => p.formats.map(f => f.type)))], [products]);
 
-  const filteredProducts = products.filter((p) => {
-    // preço mais baixo do produto considerando os formatos
-    const prices = p.formats.map((f) => f.price);
-    const lowestPrice = Math.min(...prices);
-
-    const matchesSearch = (p.title ?? "")
-      .toLowerCase()
-      .includes(search.toLowerCase());
-
-    const matchesCategory = category === "all" || p.category === category;
-    const matchesAuthor = author === "all" || p.author === author;
-
-    const matchesType =
-      type === "all" || p.formats.some((f) => f.type === type);
-
-    const matchesMinPrice =
-      minPrice === "" || lowestPrice >= parseFloat(minPrice);
-    const matchesMaxPrice =
-      maxPrice === "" || lowestPrice <= parseFloat(maxPrice);
-
-    return (
-      matchesSearch &&
-      matchesCategory &&
-      matchesAuthor &&
-      matchesType &&
-      matchesMinPrice &&
-      matchesMaxPrice
+  // --- 3. FUNÇÕES AUXILIARES ---
+  const handleFilterChange = (setter, value) => {
+    setter(prev =>
+      prev.includes(value)
+        ? prev.filter(item => item !== value)
+        : [...prev, value]
     );
-  });
+  };
+
+  const clearFilters = () => {
+    setSearch('');
+    setSelectedCategories([]);
+    setSelectedAuthors([]);
+    setSelectedTypes([]);
+    setPriceRange('');
+  };
+
+  // --- 4. LÓGICA PARA APLICAR OS FILTROS ---
+  const filteredProducts = useMemo(() => {
+    return products.filter(product => {
+      const lowestPrice = Math.min(...product.formats.map(f => f.price));
+
+      if (search && !product.title.toLowerCase().includes(search.toLowerCase())) return false;
+      if (selectedCategories.length > 0 && !selectedCategories.includes(product.category)) return false;
+      if (selectedAuthors.length > 0 && !selectedAuthors.includes(product.author)) return false;
+      if (selectedTypes.length > 0 && !product.formats.some(f => selectedTypes.includes(f.type))) return false;
+      
+      // Lógica de filtro de preço atualizada
+      if (priceRange) {
+        const [min, maxStr] = priceRange.split('-');
+        const minPrice = parseFloat(min);
+        const maxPrice = maxStr === 'Infinity' ? Infinity : parseFloat(maxStr);
+
+        if (lowestPrice < minPrice || lowestPrice > maxPrice) {
+          return false;
+        }
+      }
+
+      return true;
+    });
+  }, [products, search, selectedCategories, selectedAuthors, selectedTypes, priceRange]);
 
   return (
-    <div className="space-y-6">
-      <h1 className="text-3xl font-bold text-primary">Produtos Disponíveis</h1>
+    <div className="container mx-auto">
+      <h1 className="text-4xl font-bold mb-8">Nosso Catálogo de Livros</h1>
 
-      <ProductFilters
-        search={search}
-        setSearch={setSearch}
-        category={category}
-        setCategory={setCategory}
-        minPrice={minPrice}
-        setMinPrice={setMinPrice}
-        maxPrice={maxPrice}
-        setMaxPrice={setMaxPrice}
-        author={author}
-        setAuthor={setAuthor}
-        type={type}
-        setType={setType}
-        authorsAvailable={authorsAvailable}
-        typesAvailable={typesAvailable}
-      />
+      <div className="lg:hidden mb-6">
+        <Button onClick={() => setIsFilterModalOpen(true)} className="w-full" icon={<Filter size={18} />}>
+          Mostrar Filtros ({filteredProducts.length} resultados)
+        </Button>
+      </div>
 
-      <ProductList products={filteredProducts} />
+      <div className="flex flex-col lg:flex-row gap-8">
+        <aside className="hidden lg:block lg:w-1/4 xl:w-1/5">
+          <ProductFilters
+            search={search} setSearch={setSearch}
+            selectedCategories={selectedCategories} setSelectedCategories={setSelectedCategories}
+            selectedAuthors={selectedAuthors} setSelectedAuthors={setSelectedAuthors}
+            selectedTypes={selectedTypes} setSelectedTypes={setSelectedTypes}
+            handleFilterChange={handleFilterChange}
+            priceRange={priceRange} setPriceRange={setPriceRange}
+            allCategories={allCategories}
+            allAuthors={allAuthors}
+            allTypes={allTypes}
+            clearFilters={clearFilters}
+          />
+        </aside>
+
+        <main className="w-full lg:w-3/4 xl:w-4/5">
+          <ProductList products={filteredProducts} />
+        </main>
+      </div>
+
+      <Modal isOpen={isFilterModalOpen} onClose={() => setIsFilterModalOpen(false)} title="Filtrar Produtos">
+        <ProductFilters
+            search={search} setSearch={setSearch}
+            selectedCategories={selectedCategories} setSelectedCategories={setSelectedCategories}
+            selectedAuthors={selectedAuthors} setSelectedAuthors={setSelectedAuthors}
+            selectedTypes={selectedTypes} setSelectedTypes={setSelectedTypes}
+            handleFilterChange={handleFilterChange}
+            priceRange={priceRange} setPriceRange={setPriceRange}
+            allCategories={allCategories}
+            allAuthors={allAuthors}
+            allTypes={allTypes}
+            clearFilters={() => { clearFilters(); setIsFilterModalOpen(false); }}
+        />
+      </Modal>
     </div>
   );
 }
