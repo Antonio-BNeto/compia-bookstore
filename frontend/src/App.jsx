@@ -1,7 +1,10 @@
-export function App() {
+import RoutesWrapper from "./routes";
+import { AuthProvider } from "./contexts/AuthContext";
+
+export default function App() {
   return (
-    <>
-      <h1>Hello Tailwind</h1>
-    </>
-  )
+    <AuthProvider>
+      <RoutesWrapper />
+    </AuthProvider>
+  );
 }
