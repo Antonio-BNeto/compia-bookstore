@@ -1,4 +1,3 @@
-// src/components/products/ProductList.jsx
 import ProductItem from "./ProductItem";
 
 export default function ProductList({ products }) {

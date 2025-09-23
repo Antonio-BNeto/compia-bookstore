@@ -23,7 +23,7 @@ export default function Home() {
   const handleLoginSuccess = (loggedInUser) => {
     setIsLoginModalOpen(false);
     if (loggedInUser.role === "admin") {
-      navigate("/admin");
+      navigate("/admin/dashboard");
     }
   };
 
