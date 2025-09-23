@@ -2,9 +2,11 @@ import { BookOpen, Menu, X } from "lucide-react";
 import { Outlet, Link } from "react-router-dom";
 import { useState } from "react";
 import ThemeToggle from "../components/ui/ThemeToggle";
+import { useAuth } from "../contexts/auth/AuthContext";
 
 export default function PublicLayout() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const { user, logout } = useAuth();
 
     return (
         <div className="min-h-screen bg-bg text-text transition-colors duration-200">
@@ -27,19 +29,39 @@ export default function PublicLayout() {
                         >
                             Home
                         </Link>
-                        <Link 
-                            to="/auth/login" 
-                            className="font-medium hover:text-primary transition-colors"
-                        >
-                            Login
-                        </Link>
-                        <Link 
-                            to="/admin" 
-                            className="font-medium hover:text-primary transition-colors"
-                        >
-                            Admin
-                        </Link>
-                        
+
+                        {!user ? (
+                            // Links quando NÃO logado
+                            <Link 
+                                to="/auth/login" 
+                                className="font-medium hover:text-primary transition-colors"
+                            >
+                                Login
+                            </Link>
+                        ) : (
+                            // Links quando logado
+                            <>
+                                <Link 
+                                    to="/products" 
+                                    className="font-medium hover:text-primary transition-colors"
+                                >
+                                    Produtos
+                                </Link>
+                                <Link 
+                                    to="/admin" 
+                                    className="font-medium hover:text-primary transition-colors"
+                                >
+                                    Admin
+                                </Link>
+                                <button 
+                                    onClick={logout} 
+                                    className="font-medium hover:text-red-500 transition-colors"
+                                >
+                                    Sair
+                                </button>
+                            </>
+                        )}
+
                         <div className="h-6 w-px bg-gray-300 dark:bg-gray-600 mx-2"></div>
                         
                         <ThemeToggle />
@@ -69,20 +91,44 @@ export default function PublicLayout() {
                             >
                                 Home
                             </Link>
-                            <Link 
-                                to="/auth/login" 
-                                className="py-2 px-4 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 font-medium"
-                                onClick={() => setIsMenuOpen(false)}
-                            >
-                                Login
-                            </Link>
-                            <Link 
-                                to="/admin" 
-                                className="py-2 px-4 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 font-medium"
-                                onClick={() => setIsMenuOpen(false)}
-                            >
-                                Admin
-                            </Link>
+
+                            {!user ? (
+                                // Mobile: não logado
+                                <Link 
+                                    to="/auth/login" 
+                                    className="py-2 px-4 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 font-medium"
+                                    onClick={() => setIsMenuOpen(false)}
+                                >
+                                    Login
+                                </Link>
+                            ) : (
+                                // Mobile: logado
+                                <>
+                                    <Link 
+                                        to="/products" 
+                                        className="py-2 px-4 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 font-medium"
+                                        onClick={() => setIsMenuOpen(false)}
+                                    >
+                                        Produtos
+                                    </Link>
+                                    <Link 
+                                        to="/admin/dashboard" 
+                                        className="py-2 px-4 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 font-medium"
+                                        onClick={() => setIsMenuOpen(false)}
+                                    >
+                                        Admin
+                                    </Link>
+                                    <button 
+                                        onClick={() => {
+                                            logout();
+                                            setIsMenuOpen(false);
+                                        }}
+                                        className="py-2 px-4 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 font-medium text-left"
+                                    >
+                                        Sair
+                                    </button>
+                                </>
+                            )}
                         </div>
                     </div>
                 )}
