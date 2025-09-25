@@ -1,13 +1,15 @@
-import { BookOpen, Menu, X } from "lucide-react";
+import { BookOpen, Menu, X, ShoppingCart } from "lucide-react";
 import { Outlet, Link } from "react-router-dom";
 import { useState } from "react";
 import ThemeToggle from "../components/ui/ThemeToggle";
 import { useAuth } from "../contexts/auth/AuthContext";
+import { useCart } from "../contexts/cart/CartContext"; 
 import Button from "../components/ui/Button";
 
 export default function PublicLayout() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const { user, logout } = useAuth();
+    const { cartItems } = useCart();
 
     return (
         <div className="min-h-screen bg-bg text-text transition-colors duration-200">
@@ -32,7 +34,6 @@ export default function PublicLayout() {
                         </Link>
 
                         {!user ? (
-                            // Links quando NÃO logado
                             <Link
                                 to="/auth/login"
                                 className="font-medium hover:text-primary transition-colors"
@@ -40,9 +41,8 @@ export default function PublicLayout() {
                                 Login
                             </Link>
                         ) : (
-                            // Links quando logado
                             <>
-                                {user.role === 'user' && (
+                                {user.role === "user" && (
                                     <Link
                                         to="/products"
                                         className="font-medium hover:text-primary transition-colors"
@@ -51,7 +51,7 @@ export default function PublicLayout() {
                                     </Link>
                                 )}
 
-                                {user.role === 'admin' && (
+                                {user.role === "admin" && (
                                     <Link
                                         to="/admin"
                                         className="font-medium hover:text-primary transition-colors"
@@ -59,6 +59,22 @@ export default function PublicLayout() {
                                         Dashboard
                                     </Link>
                                 )}
+
+                                {/* Carrinho */}
+                                {user.role === "user" && (
+                                    <Link
+                                        to="/cart"
+                                        className="relative p-2 rounded-md hover:text-primary transition-colors"
+                                    >
+                                        <ShoppingCart className="h-6 w-6" />
+                                        {cartItems.length > 0 && (
+                                            <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full px-1.5 py-0.5">
+                                                {cartItems.length}
+                                            </span>
+                                        )}
+                                    </Link>
+                                )}
+
                                 <Button
                                     onClick={logout}
                                     className="font-medium hover:text-red-500 transition-colors"
@@ -75,6 +91,21 @@ export default function PublicLayout() {
 
                     {/* Mobile menu button */}
                     <div className="flex items-center gap-4 md:hidden">
+                        {/* Carrinho mobile */}
+                        {user && user.role === "user" && (
+                            <Link
+                                to="/cart"
+                                className="relative p-2 rounded-md hover:text-primary transition-colors"
+                            >
+                                <ShoppingCart className="h-6 w-6" />
+                                {cartItems.length > 0 && (
+                                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full px-1.5 py-0.5">
+                                        {cartItems.length}
+                                    </span>
+                                )}
+                            </Link>
+                        )}
+
                         <ThemeToggle className="md:hidden" />
                         <Button
                             onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -99,7 +130,6 @@ export default function PublicLayout() {
                             </Link>
 
                             {!user ? (
-                                // Mobile: não logado
                                 <Link
                                     to="/auth/login"
                                     className="py-2 px-4 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 font-medium"
@@ -108,9 +138,8 @@ export default function PublicLayout() {
                                     Login
                                 </Link>
                             ) : (
-                                // Mobile: logado
                                 <>
-                                    {user.role === 'user' && (
+                                    {user.role === "user" && (
                                         <Link
                                             to="/products"
                                             className="py-2 px-4 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 font-medium"
@@ -118,9 +147,9 @@ export default function PublicLayout() {
                                         >
                                             Produtos
                                         </Link>
-
                                     )}
-                                    {user.role === 'admin' && (
+
+                                    {user.role === "admin" && (
                                         <Link
                                             to="/admin"
                                             className="py-2 px-4 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 font-medium"
@@ -128,8 +157,8 @@ export default function PublicLayout() {
                                         >
                                             Dashboard
                                         </Link>
-
                                     )}
+
                                     <Button
                                         onClick={() => {
                                             logout();
