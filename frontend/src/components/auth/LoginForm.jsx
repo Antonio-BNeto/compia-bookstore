@@ -4,7 +4,6 @@ import Button from '../ui/Button';
 import Input from '../ui/Input';
 import { Mail, Lock } from 'lucide-react';
 
-// Importe seus usuários mockados para simular a verificação
 import { mockUsers } from '../../data/users';
 
 export default function LoginForm({ onLoginSuccess }) {

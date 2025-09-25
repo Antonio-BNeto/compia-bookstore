@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 import Button from "../ui/Button";
 
 export default function CartItem({ item }) {
-  // Acessa as funções do contexto para manipular o carrinho
   const { removeFromCart, increaseQuantity, decreaseQuantity } = useCart();
 
   return (
@@ -24,7 +23,7 @@ export default function CartItem({ item }) {
         <p className="text-sm bg-gray-100 dark:bg-gray-800 px-2 py-0.5 rounded-full inline-block mt-1">{item.type}</p>
       </div>
       <div className="flex flex-col items-end gap-3">
-        {/* Controle de Quantidade */}
+        
         <div className="flex items-center border border-gray-300 dark:border-gray-600 rounded-lg">
           <Button
             onClick={() => decreaseQuantity(item.sku)}
@@ -44,12 +43,10 @@ export default function CartItem({ item }) {
           </Button>
         </div>
         
-        {/* Preço Total do Item */}
         <p className="font-bold text-primary text-lg w-24 text-right">
           R$ {(item.price * item.quantity).toFixed(2)}
         </p>
 
-        {/* Remover Item */}
         <Button
           onClick={() => removeFromCart(item.sku)}
           className="text-text-muted hover:text-error transition-colors text-sm flex items-center gap-1"
