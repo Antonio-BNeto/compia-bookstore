@@ -1,85 +1,132 @@
-import { useParams, Link } from "react-router-dom";
-import { useState } from "react";
-import { mockProducts } from "../../data/products";
+import { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { useProducts } from "../../contexts/product/ProductContext"; // 1. USA O CONTEXTO
+import { useCart } from "../../contexts/cart/CartContext";
+import { CheckCircle, Star, ArrowLeft } from "lucide-react";
+import Button from "../../components/ui/Button";
 
-export default function ProductDetail() {
+export default function ProductDetails() {
   const { id } = useParams();
-  const productId = parseInt(id, 10);
-  const product = mockProducts.find((p) => p.id === productId);
+  const navigate = useNavigate();
+  const { products } = useProducts(); // Pega todos os produtos do contexto
+  const { addToCart } = useCart();
 
-  const [selectedFormat, setSelectedFormat] = useState(
-    product?.formats[0]?.type || null
-  );
+  // Encontra o produto APÓS os produtos serem carregados pelo contexto
+  const product = products.find((p) => p.id === parseInt(id));
 
+  // 2. ESTADO MELHORADO: Armazena o objeto do formato inteiro
+  const [selectedFormat, setSelectedFormat] = useState(null);
+  const [isAdded, setIsAdded] = useState(false);
+
+  // Efeito para definir o formato padrão quando o produto é encontrado
+  useEffect(() => {
+    if (product) {
+      // Prioriza o primeiro formato em estoque, senão o primeiro da lista
+      const initialFormat = product.formats.find(f => f.stock !== 0) || product.formats[0];
+      setSelectedFormat(initialFormat);
+    }
+  }, [product]);
+
+  // Função para adicionar ao carrinho
+  const handleAddToCart = () => {
+    if (!product || !selectedFormat) return;
+
+    const itemToAdd = {
+      bookId: product.id,
+      title: product.title,
+      author: product.author,
+      image: product.image,
+      sku: selectedFormat.sku,
+      type: selectedFormat.type,
+      price: selectedFormat.price,
+      quantity: 1,
+    };
+    
+    addToCart(itemToAdd);
+    setIsAdded(true);
+    setTimeout(() => setIsAdded(false), 2000);
+  };
+  
   if (!product) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] text-center">
         <h1 className="text-2xl font-bold mb-2">Produto não encontrado!</h1>
-        <p className="text-gray-400 mb-6">
+        <p className="text-text-muted mb-6">
           O livro que você procura não existe ou foi removido.
         </p>
-        <Link
-          to="/products"
-          className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
-        >
+        <Button onClick={() => navigate("/products")} icon={<ArrowLeft size={18}/>}>
           Voltar ao Catálogo
-        </Link>
+        </Button>
       </div>
     );
   }
-
-  const currentFormat = product.formats.find((f) => f.type === selectedFormat);
+  
+  const isOutOfStock = selectedFormat?.stock === 0;
 
   return (
-    <div className="max-w-5xl mx-auto p-6 grid md:grid-cols-2 gap-8">
+    <div className="max-w-5xl mx-auto p-6 grid md:grid-cols-2 gap-8 lg:gap-12">
       {/* Imagem */}
-      <div className="flex justify-center">
+      <div className="flex justify-center items-start">
         <img
           src={product.image || "/placeholder.jpg"}
           alt={product.title}
-          className="rounded-lg shadow-lg max-h-[400px] object-contain"
+          className="rounded-lg shadow-lg max-h-[500px] object-contain sticky top-24"
         />
       </div>
 
       {/* Detalhes */}
-      <div className="flex flex-col">
-        <h1 className="text-3xl font-bold">{product.title}</h1>
-        <p className="text-gray-500 mb-2">Autor: {product.author}</p>
-        <span className="text-yellow-400 font-semibold mb-4">
-          ⭐ {product.rating}
-        </span>
-        <p className="text-gray-700 mb-6">{product.description}</p>
-
-        {/* Preço do formato selecionado */}
-        <div className="mb-6">
-          <span className="text-2xl font-bold text-primary">
-            R$ {currentFormat?.price.toFixed(2)}
-          </span>
+      <div className="flex flex-col gap-4">
+        <h1 className="text-3xl lg:text-4xl font-bold">{product.title}</h1>
+        <p className="text-lg text-text-muted">por {product.author}</p>
+        <div className="flex items-center gap-2">
+            <Star className="text-yellow-500" fill="currentColor" />
+            <span className="font-bold">{product.rating}</span>
         </div>
+        <p className="text-text-muted leading-relaxed">{product.description}</p>
 
-        {/* Formatos como tags */}
-        <div className="mb-6">
+        {/* 3. SELETOR DE FORMATO MELHORADO (com botões e estado de estoque) */}
+        <div>
           <h2 className="text-lg font-semibold mb-3">Formatos disponíveis:</h2>
           <div className="flex gap-3 flex-wrap">
-            {product.formats.map((f) => (
-              <span
-                key={f.sku}
-                onClick={() => setSelectedFormat(f.type)}
-                className={`px-4 py-2 rounded-full border-2 cursor-pointer text-sm transition ${
-                  selectedFormat === f.type
-                    ? "bg-primary text-white border-primary"
-                    : "bg-black/50 text-white border-gray-300 hover:border-primary"
+            {product.formats.map((format) => (
+              <button
+                key={format.sku}
+                onClick={() => setSelectedFormat(format)}
+                disabled={format.stock === 0}
+                className={`px-4 py-2 rounded-lg border-2 text-sm transition-all disabled:opacity-40 disabled:cursor-not-allowed ${
+                  selectedFormat?.sku === format.sku
+                    ? "border-primary bg-primary/10 text-primary font-semibold"
+                    : "border-gray-300 dark:border-gray-700 hover:border-primary"
                 }`}
               >
-                {f.type}
-              </span>
+                {format.type} {format.stock === 0 && "(Esgotado)"}
+              </button>
             ))}
           </div>
         </div>
-
-        <button className="mt-2 px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors">
-          Adicionar ao Carrinho
-        </button>
+        
+        <div className="mt-4 p-4 bg-surface rounded-lg border border-gray-200 dark:border-gray-700 space-y-4">
+            <div className="text-3xl font-bold text-primary">
+                R$ {selectedFormat?.price.toFixed(2).replace('.', ',')}
+            </div>
+            
+            <Button
+              onClick={handleAddToCart}
+              disabled={isAdded || isOutOfStock}
+              size="large"
+              className="w-full"
+            >
+              {isAdded ? (
+                <span className="flex items-center justify-center gap-2">
+                  <CheckCircle size={20} /> Adicionado!
+                </span>
+              ) : isOutOfStock ? (
+                "Produto Esgotado"
+              ) : (
+                "Adicionar ao Carrinho"
+              )}
+            </Button>
+        </div>
       </div>
     </div>
   );

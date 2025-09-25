@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 
 export default function ProductItem({ product }) {
-  // Garante que o produto tenha formatos antes de calcular
   const lowestPrice = product.formats?.length
     ? Math.min(...product.formats.map((f) => f.price))
     : 0;
@@ -23,7 +22,7 @@ export default function ProductItem({ product }) {
         </span>
 
         <Link
-          to={`/products/1`}
+          to={`/products/${product.id}`}
           className="mt-4 inline-block text-center px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
         >
           Ver detalhes

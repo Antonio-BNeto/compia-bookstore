@@ -25,7 +25,6 @@ export default function AdminLayout() {
   const { user, logout } = useAuth();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  // Componente de link reutilizável para a sidebar
   const SidebarLink = ({ to, icon, text }) => (
     <NavLink
       to={to}
