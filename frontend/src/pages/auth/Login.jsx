@@ -6,7 +6,7 @@ export default function Login() {
 
   // Função chamada ao logar
   const handleLoginSuccess = (user) => {
-    navigate(user.role === "admin" ? "/admin/dashboard" : "/");
+    navigate(user.role === "admin" ? "/admin" : "/");
   };
 
   return (
