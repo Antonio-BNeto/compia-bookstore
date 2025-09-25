@@ -10,7 +10,7 @@ import AdminLayout from "./layouts/AdminLayout";
 
 // Páginas (sugestão: pode remover o sufixo 'Page' para ficar mais curto)
 const Home = lazy(() => import("./pages/public/Home"));
-const ProductDetails = lazy(() => import("./pages/public/ProductDetails"));
+const ProductDetails = lazy(() => import("./pages/public/ProductDetail"));
 const Cart = lazy(() => import("./pages/public/Cart"));
 const Checkout = lazy(() => import("./pages/public/Checkout"));
 const Orders = lazy(() => import("./pages/public/Orders"));

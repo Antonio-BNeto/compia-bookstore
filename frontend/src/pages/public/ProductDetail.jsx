@@ -1,10 +1,15 @@
 import { useParams, Link } from "react-router-dom";
+import { useState } from "react";
 import { mockProducts } from "../../data/products";
 
 export default function ProductDetail() {
   const { id } = useParams();
-  const productId = parseInt(id, 10); // garante número
+  const productId = parseInt(id, 10);
   const product = mockProducts.find((p) => p.id === productId);
+
+  const [selectedFormat, setSelectedFormat] = useState(
+    product?.formats[0]?.type || null
+  );
 
   if (!product) {
     return (
@@ -23,7 +28,7 @@ export default function ProductDetail() {
     );
   }
 
-  const lowestPrice = Math.min(...product.formats.map((f) => f.price));
+  const currentFormat = product.formats.find((f) => f.type === selectedFormat);
 
   return (
     <div className="max-w-5xl mx-auto p-6 grid md:grid-cols-2 gap-8">
@@ -45,29 +50,34 @@ export default function ProductDetail() {
         </span>
         <p className="text-gray-700 mb-6">{product.description}</p>
 
+        {/* Preço do formato selecionado */}
         <div className="mb-6">
           <span className="text-2xl font-bold text-primary">
-            R$ {lowestPrice.toFixed(2)}
+            R$ {currentFormat?.price.toFixed(2)}
           </span>
         </div>
 
-        {/* Formatos */}
-        <div>
-          <h2 className="text-lg font-semibold mb-2">Formatos disponíveis:</h2>
-          <ul className="space-y-2">
+        {/* Formatos como tags */}
+        <div className="mb-6">
+          <h2 className="text-lg font-semibold mb-3">Formatos disponíveis:</h2>
+          <div className="flex gap-3 flex-wrap">
             {product.formats.map((f) => (
-              <li
+              <span
                 key={f.sku}
-                className="flex justify-between items-center border p-3 rounded-lg"
+                onClick={() => setSelectedFormat(f.type)}
+                className={`px-4 py-2 rounded-full border-2 cursor-pointer text-sm transition ${
+                  selectedFormat === f.type
+                    ? "bg-primary text-white border-primary"
+                    : "bg-black/50 text-white border-gray-300 hover:border-primary"
+                }`}
               >
-                <span>{f.type}</span>
-                <span className="font-bold">R$ {f.price.toFixed(2)}</span>
-              </li>
+                {f.type}
+              </span>
             ))}
-          </ul>
+          </div>
         </div>
 
-        <button className="mt-6 px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors">
+        <button className="mt-2 px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors">
           Adicionar ao Carrinho
         </button>
       </div>
