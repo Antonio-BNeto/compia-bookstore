@@ -23,7 +23,7 @@ export default function ProductItem({ product }) {
         </span>
 
         <Link
-          to={`/products/${product.id}`}
+          to={`/products/1`}
           className="mt-4 inline-block text-center px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
         >
           Ver detalhes

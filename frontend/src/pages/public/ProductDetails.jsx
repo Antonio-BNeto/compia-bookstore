@@ -1,96 +1,75 @@
-import { useContext } from "react";
 import { useParams, Link } from "react-router-dom";
-import { ProductContext } from "../../contexts/product/ProductContext";
-import { CartContext } from "../../contexts/cart/CartContext";
-import Button from "../../components/ui/Button";
-import { ShoppingCart, ArrowLeft } from "lucide-react";
-import image from "../../assets/logo.jpg"; // Placeholder caso não tenha imagem
+import { mockProducts } from "../../data/products";
 
-export default function ProductDetails() {
-  const { productId } = useParams();
-  const { products } = useContext(ProductContext);
-  const { addToCart } = useContext(CartContext);
-
-  const product = products.find((p) => p.id === parseInt(productId));
+export default function ProductDetail() {
+  const { id } = useParams();
+  const productId = parseInt(id, 10); // garante número
+  const product = mockProducts.find((p) => p.id === productId);
 
   if (!product) {
     return (
-      <div className="container mx-auto px-4 py-12 text-center">
-        <h2 className="text-2xl font-bold">Produto não encontrado!</h2>
-        <Link to="/">
-          <Button variant="outline" className="mt-4">
-            <ArrowLeft size={18} className="mr-2" />
-            Voltar para o Catálogo
-          </Button>
+      <div className="flex flex-col items-center justify-center min-h-[60vh] text-center">
+        <h1 className="text-2xl font-bold mb-2">Produto não encontrado!</h1>
+        <p className="text-gray-400 mb-6">
+          O livro que você procura não existe ou foi removido.
+        </p>
+        <Link
+          to="/products"
+          className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
+        >
+          Voltar ao Catálogo
         </Link>
       </div>
     );
   }
 
+  const lowestPrice = Math.min(...product.formats.map((f) => f.price));
+
   return (
-    <div className="min-h-screen bg-bg text-text py-12">
-      <div className="container mx-auto px-4">
-        <Link
-          to="/"
-          className="inline-flex items-center gap-2 text-primary mb-8 hover:underline"
-        >
-          <ArrowLeft size={18} />
-          Voltar para o catálogo
-        </Link>
+    <div className="max-w-5xl mx-auto p-6 grid md:grid-cols-2 gap-8">
+      {/* Imagem */}
+      <div className="flex justify-center">
+        <img
+          src={product.image || "/placeholder.jpg"}
+          alt={product.title}
+          className="rounded-lg shadow-lg max-h-[400px] object-contain"
+        />
+      </div>
 
-        <div className="grid md:grid-cols-2 gap-12 items-start">
-          {/* Imagem */}
-          <div className="bg-surface p-6 rounded-lg shadow-md">
-            <img
-              src={product.image || image}
-              alt={product.title}
-              className="w-full h-auto rounded-lg object-cover"
-            />
-          </div>
+      {/* Detalhes */}
+      <div className="flex flex-col">
+        <h1 className="text-3xl font-bold">{product.title}</h1>
+        <p className="text-gray-500 mb-2">Autor: {product.author}</p>
+        <span className="text-yellow-400 font-semibold mb-4">
+          ⭐ {product.rating}
+        </span>
+        <p className="text-gray-700 mb-6">{product.description}</p>
 
-          {/* Detalhes */}
-          <div>
-            <span className="text-sm uppercase text-text-muted">
-              {product.category}
-            </span>
-            <h1 className="text-4xl font-bold my-3">{product.title}</h1>
-            <p className="text-xl text-text-muted mb-6">{product.author}</p>
-            <p className="text-lg leading-relaxed mb-6">{product.description}</p>
-
-            {/* Lista de formatos */}
-            <div className="space-y-4">
-              {product.formats.map((format) => (
-                <div
-                  key={format.sku}
-                  className="flex items-center justify-between p-4 border rounded-lg bg-surface"
-                >
-                  <div>
-                    <p className="font-semibold">{format.type}</p>
-                    <p className="text-primary font-bold text-lg">
-                      R$ {format.price.toFixed(2)}
-                    </p>
-                    {format.stock !== null && (
-                      <p className="text-sm text-text-muted">
-                        {format.stock > 0
-                          ? `Estoque: ${format.stock}`
-                          : "Sem estoque"}
-                      </p>
-                    )}
-                  </div>
-
-                  <Button
-                    disabled={format.stock === 0}
-                    onClick={() => addToCart({ ...product, chosenFormat: format })}
-                    className="flex items-center gap-2"
-                  >
-                    <ShoppingCart size={20} />
-                    {format.stock === 0 ? "Indisponível" : "Adicionar"}
-                  </Button>
-                </div>
-              ))}
-            </div>
-          </div>
+        <div className="mb-6">
+          <span className="text-2xl font-bold text-primary">
+            R$ {lowestPrice.toFixed(2)}
+          </span>
         </div>
+
+        {/* Formatos */}
+        <div>
+          <h2 className="text-lg font-semibold mb-2">Formatos disponíveis:</h2>
+          <ul className="space-y-2">
+            {product.formats.map((f) => (
+              <li
+                key={f.sku}
+                className="flex justify-between items-center border p-3 rounded-lg"
+              >
+                <span>{f.type}</span>
+                <span className="font-bold">R$ {f.price.toFixed(2)}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <button className="mt-6 px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors">
+          Adicionar ao Carrinho
+        </button>
       </div>
     </div>
   );

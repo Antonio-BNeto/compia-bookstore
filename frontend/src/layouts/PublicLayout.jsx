@@ -122,7 +122,7 @@ export default function PublicLayout() {
                                     )}
                                     {user.role === 'admin' && (
                                         <Link
-                                            to="/admin/dashboard"
+                                            to="/admin"
                                             className="py-2 px-4 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 font-medium"
                                             onClick={() => setIsMenuOpen(false)}
                                         >

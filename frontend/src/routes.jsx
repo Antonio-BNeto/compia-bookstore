@@ -8,28 +8,25 @@ import PublicLayout from "./layouts/PublicLayout";
 import AuthLayout from "./layouts/AuthLayout";
 import AdminLayout from "./layouts/AdminLayout";
 
-// Páginas públicas
-const HomePage = lazy(() => import("./pages/public/Home"));
-const ProductDetailsPage = lazy(() => import("./pages/public/ProductDetails"));
-const CartPage = lazy(() => import("./pages/public/Cart"));
-const CheckoutPage = lazy(() => import("./pages/public/Checkout"));
-const OrdersPage = lazy(() => import("./pages/public/Orders"));
-const ProductsPage = lazy(() => import("./pages/public/Products")); // <- nova página
+// Páginas (sugestão: pode remover o sufixo 'Page' para ficar mais curto)
+const Home = lazy(() => import("./pages/public/Home"));
+const ProductDetails = lazy(() => import("./pages/public/ProductDetails"));
+const Cart = lazy(() => import("./pages/public/Cart"));
+const Checkout = lazy(() => import("./pages/public/Checkout"));
+const Orders = lazy(() => import("./pages/public/Orders"));
+const Products = lazy(() => import("./pages/public/Products"));
 
-// Páginas de autenticação
-const LoginPage = lazy(() => import("./pages/auth/Login"));
-const RegisterPage = lazy(() => import("./pages/auth/Register"));
-const ForgotPasswordPage = lazy(() => import("./pages/auth/ForgotPassword"));
+const Login = lazy(() => import("./pages/auth/Login"));
+const Register = lazy(() => import("./pages/auth/Register"));
+const ForgotPassword = lazy(() => import("./pages/auth/ForgotPassword"));
 
-// Páginas admin
-const DashboardPage = lazy(() => import("./pages/admin/Dashboard"));
-const AdminProductsPage = lazy(() => import("./pages/admin/Products"));
-const AdminOrdersPage = lazy(() => import("./pages/admin/Orders"));
-const CustomersPage = lazy(() => import("./pages/admin/Customers"));
-const UsersPage = lazy(() => import("./pages/admin/Users"));
+const Dashboard = lazy(() => import("./pages/admin/Dashboard"));
+const AdminProducts = lazy(() => import("./pages/admin/Products"));
+const AdminOrders = lazy(() => import("./pages/admin/Orders"));
+const Customers = lazy(() => import("./pages/admin/Customers"));
+const Users = lazy(() => import("./pages/admin/Users"));
 
-// Compartilhadas
-const NotFoundPage = lazy(() => import("./shared/components/NotFound"));
+const NotFound = lazy(() => import("./shared/components/NotFound"));
 
 export default function RoutesWrapper() {
   return (
@@ -37,40 +34,46 @@ export default function RoutesWrapper() {
       <Suspense fallback={<Loader />}>
         <Routes>
 
-          {/* Rotas públicas */}
+          {/* === ROTAS PÚBLICAS === */}
           <Route element={<PublicLayout />}>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/products/:id" element={<ProductDetailsPage />} />
-            <Route path="/cart" element={<CartPage />} />
-            <Route path="/checkout" element={<CheckoutPage />} />
-            <Route path="/orders" element={<OrdersPage />} />
-
-            {/* Página de produtos - precisa estar logado */}
+            <Route path="/" element={<Home />} />
+            <Route path="/products" element={<Products />} />
+            <Route path="/products/:id" element={<ProductDetails />} />
+            <Route path="/cart" element={<Cart />} />
+            
+            {/* Rotas que exigem apenas login (qualquer papel) */}
             <Route element={<ProtectedRoute />}>
-              <Route path="/products" element={<ProductsPage />} />
+              <Route path="/checkout" element={<Checkout />} />
+              <Route path="/orders" element={<Orders />} />
             </Route>
           </Route>
 
-          {/* Rotas de autenticação */}
-          <Route element={<AuthLayout />}>
-            <Route path="/auth/login" element={<LoginPage />} />
-            <Route path="/auth/register" element={<RegisterPage />} />
-            <Route path="/auth/forgot-password" element={<ForgotPasswordPage />} />
+          {/* === ROTAS DE AUTENTICAÇÃO === */}
+          <Route path="/auth" element={<AuthLayout />}>
+            <Route path="login" element={<Login />} />
+            <Route path="register" element={<Register />} />
+            <Route path="forgot-password" element={<ForgotPassword />} />
           </Route>
 
-          {/* Rotas protegidas (admin) */}
-          <Route element={<ProtectedRoute role="admin" />}>
-            <Route element={<AdminLayout />}>
-              <Route path="/admin/dashboard" element={<DashboardPage />} />
-              <Route path="/admin/products" element={<AdminProductsPage />} />
-              <Route path="/admin/orders" element={<AdminOrdersPage />} />
-              <Route path="/admin/customers" element={<CustomersPage />} />
-              <Route path="/admin/users" element={<UsersPage />} />
-            </Route>
+          {/* === ROTAS PROTEGIDAS (ADMIN) === */}
+          {/* SUGESTÃO: Rotas de admin agrupadas sob um único caminho pai */}
+          <Route 
+            path="/admin" 
+            element={
+              <ProtectedRoute role="admin">
+                <AdminLayout />
+              </ProtectedRoute>
+            }
+          >
+            <Route index element={<Dashboard />} />
+            <Route path="products" element={<AdminProducts />} />
+            <Route path="orders" element={<AdminOrders />} />
+            <Route path="customers" element={<Customers />} />
+            <Route path="users" element={<Users />} />
           </Route>
 
-          {/* Página 404 */}
-          <Route path="*" element={<NotFoundPage />} />
+          {/* === PÁGINA 404 === */}
+          <Route path="*" element={<NotFound />} />
 
         </Routes>
       </Suspense>
