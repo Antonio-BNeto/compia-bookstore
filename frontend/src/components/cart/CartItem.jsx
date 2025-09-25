@@ -35,13 +35,13 @@ export default function CartItem({ item }) {
             <Minus size={16} />
           </Button>
           <span className="px-3 font-semibold text-center w-12">{item.quantity}</span>
-          <button 
+          <Button 
             onClick={() => increaseQuantity(item.sku)} 
             className="p-2"
             aria-label="Aumentar quantidade"
           >
             <Plus size={16} />
-          </button>
+          </Button>
         </div>
         
         {/* Preço Total do Item */}
