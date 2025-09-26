@@ -1,6 +1,6 @@
 package com.compia.payment.dto;
 
-public record ResponseDTO(
+public record CreatePreferenceResponseDTO(
         String preferenceId,
         String redirectUrl
 ) {
