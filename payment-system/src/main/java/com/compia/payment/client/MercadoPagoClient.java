@@ -3,73 +3,84 @@ package com.compia.payment.client;
 
 import com.compia.payment.dto.CreatePreferenceRequestDTO;
 import com.compia.payment.dto.CreatePreferenceResponseDTO;
+import com.compia.payment.exception.PaymentException;
 import com.mercadopago.MercadoPagoConfig;
 import com.mercadopago.client.preference.*;
 import com.mercadopago.exceptions.MPApiException;
 import com.mercadopago.exceptions.MPException;
 import com.mercadopago.resources.preference.Preference;
+import jakarta.annotation.PostConstruct;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
+@RequiredArgsConstructor
+@Slf4j
 public class MercadoPagoClient {
 
-    @Value(value = "${api.v1.mercadopago-access-token}")
+    @Value("${api.v1.mercadopago-access-token}")
     private String accessToken;
 
-    @Value(value = "${api.v1.mercadopago-notification-url}")
-    private String notificationUrl;
-
+    @PostConstruct
     public void init() {
         MercadoPagoConfig.setAccessToken(accessToken);
+        log.info("Mercado Pago SDK initialized successfully.");
     }
 
-    public CreatePreferenceResponseDTO createPreference(CreatePreferenceRequestDTO createPreferenceRequestDTO, String orderNumber) {
-
+    public CreatePreferenceResponseDTO createPreference(CreatePreferenceRequestDTO createPreferenceRequestDTO, String orderNumber) throws PaymentException {
+        log.info("Creating Mercado Pago preference for orderNumber: {}", orderNumber);
         try {
-            PreferenceClient preferenceClient = new PreferenceClient();
+            PreferenceClient client = new PreferenceClient();
+
             List<PreferenceItemRequest> items = createPreferenceRequestDTO.items().stream()
-                    .map(item -> PreferenceItemRequest.builder()
-                            .id(item.id())
-                            .title(item.title())
-                            .description(item.description())
-                            .quantity(item.quantity())
-                            .unitPrice(item.unitPrice())
+                    .map(itemInput -> PreferenceItemRequest.builder()
+                            .id(itemInput.id())
+                            .title(itemInput.title())
+                            .description(itemInput.description())
+                            .quantity(itemInput.quantity())
+                            .unitPrice(itemInput.unitPrice())
                             .build())
-                    .toList();
+                    .collect(Collectors.toList());
 
             PreferencePayerRequest payer = PreferencePayerRequest.builder()
                     .name(createPreferenceRequestDTO.payer().name())
+                    .email(createPreferenceRequestDTO.payer().email())
                     .build();
 
-            PreferenceBackUrlsRequest backUrlsRequest = PreferenceBackUrlsRequest.builder()
+            PreferenceBackUrlsRequest backUrls = PreferenceBackUrlsRequest.builder()
                     .success(createPreferenceRequestDTO.backUrls().success())
-                    .pending(createPreferenceRequestDTO.backUrls().pending())
                     .failure(createPreferenceRequestDTO.backUrls().failure())
+                    .pending(createPreferenceRequestDTO.backUrls().pending())
                     .build();
 
-            PreferenceRequest preferenceRequest = PreferenceRequest.builder()
+            PreferenceRequest request = PreferenceRequest.builder()
                     .items(items)
                     .payer(payer)
-                    .backUrls(backUrlsRequest)
-                    .notificationUrl(notificationUrl)
-                    .externalReference(orderNumber)
-                    .autoReturn("approved")
+                    .backUrls(backUrls)
+                    .externalReference(orderNumber) // Link to your order ID
                     .build();
 
-            Preference preference = preferenceClient.create(preferenceRequest);
+            Preference preference = client.create(request);
 
-            return new CreatePreferenceResponseDTO(
-                    preference.getId(),
-                    preference.getInitPoint()
-            );
-        } catch (MPException | MPApiException e) {
-            throw new RuntimeException(e);
+            log.info("Mercado Pago preference created. ID: {}, InitPoint: {}", preference.getId(), preference.getInitPoint());
+
+            return new CreatePreferenceResponseDTO(preference.getId(), preference.getInitPoint());
+
+        } catch (MPApiException e) {
+            log.error("Mercado Pago API error creating preference for orderNumber {}: Status Code: {}, Response: {}",
+                    orderNumber, e.getStatusCode(), e.getApiResponse().getContent(), e);
+            throw new PaymentException("Mercado Pago API error: " + e.getApiResponse().getContent(), e);
+        } catch (MPException e) {
+            log.error("Mercado Pago SDK error creating preference for orderNumber {}: {}", orderNumber, e.getMessage(), e);
+            throw new PaymentException("Mercado Pago SDK error: " + e.getMessage(), e);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            log.error("Unexpected error creating Mercado Pago preference for orderNumber {}: {}", orderNumber, e.getMessage(), e);
+            throw new PaymentException("Unexpected error creating preference.", e);
         }
-
     }
 }
