@@ -3,20 +3,9 @@ import { BarChart, DollarSign, Package, Users, ShoppingCart } from "lucide-react
 import { useAuth } from "../../contexts/auth/AuthContext";
 import { useProducts } from '../../contexts/product/ProductContext';
 import { useOrders } from '../../contexts/order/OrderContext';
-
 import { mockUsers } from '../../data/users';
-
-const StatCard = ({ title, value, icon, color }) => (
-  <div className="bg-surface p-6 rounded-lg shadow-sm flex items-center gap-4">
-    <div className={`w-12 h-12 rounded-full flex items-center justify-center bg-${color}-500/10`}>
-      {icon}
-    </div>
-    <div>
-      <p className="text-sm text-text-muted">{title}</p>
-      <p className="text-2xl font-bold">{value}</p>
-    </div>
-  </div>
-);
+import SalesChart from '../../components/admin/SalesChart';
+import StatCard  from '../../components/admin/StatCard';
 
 export default function Dashboard() {
   const { user } = useAuth();
@@ -35,9 +24,7 @@ export default function Dashboard() {
     });
 
     const totalOrders = orders.length;
-
     const totalProducts = products.length;
-
     const totalCustomers = mockUsers.filter(u => u.role === 'user').length;
     
     return {
@@ -47,13 +34,30 @@ export default function Dashboard() {
       customers: totalCustomers,
     };
   }, [orders, products]);
+  
+  const chartData = useMemo(() => {
+    const salesByDay = orders.reduce((acc, order) => {
+      const orderDate = new Date(order.date).toLocaleDateString('pt-BR');
+      const orderTotal = order.items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+      if (!acc[orderDate]) acc[orderDate] = 0;
+      acc[orderDate] += orderTotal;
+      return acc;
+    }, {});
 
+    return Object.keys(salesByDay).map(date => ({
+      name: date.slice(0, 5),
+      Vendas: salesByDay[date],
+    })).sort((a, b) => {
+        const dateA = a.name.split('/').reverse().join('-');
+        const dateB = b.name.split('/').reverse().join('-');
+        return new Date(`2025-${dateA}`) - new Date(`2025-${dateB}`);
+    });
+  }, [orders]);
 
   return (
-    <div className="p-6 md:p-8">
+    <div>
       <h1 className="text-3xl font-bold mb-2">Dashboard</h1>
       <p className="text-text-muted mb-8">Bem-vindo de volta, {user?.name}!</p>
-
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         <StatCard
           title="Vendas Totais"
@@ -83,9 +87,15 @@ export default function Dashboard() {
 
       <div className="mt-10 bg-surface p-6 rounded-lg shadow-sm">
         <h2 className="text-xl font-bold mb-4">Visão Geral das Vendas</h2>
-        <div className="h-64 bg-gray-200 dark:bg-gray-700 rounded-md flex items-center justify-center">
-            <BarChart size={48} className="text-text-muted" />
-            <p className="ml-4 text-text-muted">Componente de gráfico viria aqui.</p>
+        <div className="h-80 w-full">
+          {chartData.length > 0 ? (
+            <SalesChart data={chartData} />
+          ) : (
+            <div className="h-full flex flex-col items-center justify-center text-text-muted">
+              <BarChart size={48} />
+              <p className="mt-4">Não há dados de vendas para exibir no gráfico ainda.</p>
+            </div>
+          )}
         </div>
       </div>
     </div>

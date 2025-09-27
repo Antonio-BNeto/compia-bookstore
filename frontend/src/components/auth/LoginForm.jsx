@@ -22,7 +22,6 @@ export default function LoginForm({ onLoginSuccess }) {
 
     if (foundUser) {
       login(foundUser);
-      // Se a função de callback foi fornecida, chame-a
       if (onLoginSuccess) {
         onLoginSuccess(foundUser);
       }

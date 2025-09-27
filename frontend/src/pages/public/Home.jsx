@@ -16,14 +16,12 @@ export default function Home() {
   const { products } = useContext(ProductContext);
   const navigate = useNavigate();
 
-  // Estado do modal de login
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
 
-  // Quando o login for bem-sucedido
   const handleLoginSuccess = (loggedInUser) => {
     setIsLoginModalOpen(false);
     if (loggedInUser.role === "admin") {
-      navigate("/admin/dashboard");
+      navigate("/admin");
     }
   };
 

@@ -1,16 +1,13 @@
 /* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useState, useEffect } from 'react';
 
-// Criar o contexto
 const AuthContext = createContext();
 
-// Provider do contexto
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Verificar se há usuário logado no localStorage
     const savedUser = localStorage.getItem('compia_user');
     if (savedUser) {
       setUser(JSON.parse(savedUser));
