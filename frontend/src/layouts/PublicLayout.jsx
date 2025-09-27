@@ -11,7 +11,6 @@ export default function PublicLayout() {
   const { user, logout } = useAuth();
   const { cartItems } = useCart();
 
-  // Calcula a quantidade total de itens no carrinho (soma das quantidades)
   const totalItemCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
@@ -24,7 +23,6 @@ export default function PublicLayout() {
             <span className="hidden sm:inline">Compia</span>
           </Link>
 
-          {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-6">
             <Link to="/" className="font-medium hover:text-primary transition-colors">
               Home

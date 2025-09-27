@@ -96,7 +96,7 @@ export const mockProducts = [
     rating: 4.3,
     formats: [
       { sku: "DS-PHY-006", type: "Físico", price: 85.0, stock: 10 },
-      // { sku: "DS-EBO-006", type: "E-book", price: 55.0, stock: null },
+      { sku: "DS-EBO-006", type: "E-book", price: 55.0, stock: null },
     ],
   },
   {
@@ -109,7 +109,7 @@ export const mockProducts = [
     rating: 4.7,
     formats: [
       { sku: "ML-PHY-007", type: "Físico", price: 135.0, stock: 12 },
-      // { sku: "ML-EBO-007", type: "E-book", price: 95.0, stock: null },
+      { sku: "ML-EBO-007", type: "E-book", price: 95.0, stock: null },
     ],
   },
   {

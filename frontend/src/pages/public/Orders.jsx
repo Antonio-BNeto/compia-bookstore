@@ -2,10 +2,10 @@ import { useMemo } from 'react';
 import { useAuth } from '../../contexts/auth/AuthContext';
 import { useOrders } from '../../contexts/order/OrderContext';
 import OrderItem from '../../components/order/OrderItem';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 import Button from '../../components/ui/Button';
 
-export default function Order() {
+export default function Orders() {
   const { user } = useAuth();
   const { orders, loading } = useOrders();
 
@@ -22,7 +22,6 @@ export default function Order() {
   return (
     <div className="container mx-auto">
       <h1 className="text-4xl font-bold mb-8">Meus Pedidos</h1>
-
       {userOrders.length > 0 ? (
         <div className="space-y-4">
           {userOrders.map(order => (
