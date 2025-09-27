@@ -1,11 +1,32 @@
 // src/mocks/products.js
+import ia from '../assets/books/ia.jpg';
+import algorithms from '../assets/books/algorithms.png';
+import react from '../assets/books/react.jpg';
+import fundamentosbd from '../assets/books/fundamentosbd.jpg';
+import codigolimpo from '../assets/books/codigolimpo.jpg';
+import edemprofundidade from '../assets/books/edemprofundidade.webp';
+import ml from '../assets/books/ml.jpg';
+import arqsoftwaremoderna from '../assets/books/arqsoftwaremoderna.jpg';
+import pythonanalise from '../assets/books/pythonanalise.jpg';
+import deeplearning from '../assets/books/deeplearningtensorflow.jpg';
+import designpatterns from '../assets/books/designpatternsjava.webp';
+import nosql from '../assets/books/nosqlessencial.jpg';
+import kubernetes from '../assets/books/kubernetes.jpg';
+import docker from '../assets/books/docker.jpg';
+import segurancaweb from '../assets/books/segurancaweb.jpg';
+import js from '../assets/books/js.jpg';
+import cloudcomputing from '../assets/books/cloudcomputing.jpg';
+import cienciadedados from '../assets/books/cienciadedados.jpg';
+import requisitos from '../assets/books/requisitios.jpg';
+import analiser from '../assets/books/analiser.jpg';
+
 export const mockProducts = [
   {
     id: 1,
     title: "Introdução à Inteligência Artificial",
     author: "Maria Silva",
     description: "Fundamentos de IA, machine learning e redes neurais.",
-    image: "/assets/books/ia.jpg",
+    image: ia,
     category: "Inteligência Artificial",
     rating: 4.5,
     formats: [
@@ -18,7 +39,7 @@ export const mockProducts = [
     title: "Algoritmos Modernos",
     author: "João Souza",
     description: "Estruturas de dados e algoritmos de alta performance.",
-    image: "/assets/books/algorithms.png",
+    image: algorithms,
     category: "Programação",
     rating: 5,
     formats: [
@@ -31,7 +52,7 @@ export const mockProducts = [
     title: "React: Guia Definitivo",
     author: "Ana Pereira",
     description: "Construção de interfaces modernas com React.",
-    image: "/assets/books/react.jpg",
+    image: react,
     category: "Programação",
     rating: 4.8,
     formats: [
@@ -44,7 +65,7 @@ export const mockProducts = [
     title: "Fundamentos de Banco de Dados",
     author: "Carlos Costa",
     description: "Modelagem de dados, SQL e NoSQL.",
-    image: "/assets/books/database.jpg",
+    image: fundamentosbd,
     category: "Banco de Dados",
     rating: 4.2,
     formats: [
@@ -57,7 +78,7 @@ export const mockProducts = [
     title: "Código Limpo",
     author: "Robert C. Martin (Uncle Bob)",
     description: "Como escrever código legível e manutenível.",
-    image: "/assets/books/clean-code.jpg",
+    image: codigolimpo,
     category: "Engenharia de Software",
     rating: 4.9,
     formats: [
@@ -70,7 +91,7 @@ export const mockProducts = [
     title: "Estruturas de Dados em Profundidade",
     author: "Fernanda Oliveira",
     description: "Principais estruturas de dados aplicadas em software.",
-    image: "/assets/books/data-structures.jpg",
+    image: edemprofundidade,
     category: "Programação",
     rating: 4.3,
     formats: [
@@ -83,7 +104,7 @@ export const mockProducts = [
     title: "Machine Learning Avançado",
     author: "Luiz Carvalho",
     description: "Visão computacional e NLP com ML moderno.",
-    image: "/assets/books/ml.jpg",
+    image: ml,
     category: "Inteligência Artificial",
     rating: 4.7,
     formats: [
@@ -96,7 +117,7 @@ export const mockProducts = [
     title: "Arquitetura de Software Moderna",
     author: "Ricardo Mendes",
     description: "Sistemas escaláveis e resilientes.",
-    image: "/assets/books/software-architecture.jpg",
+    image: arqsoftwaremoderna,
     category: "Engenharia de Software",
     rating: 4.6,
     formats: [
@@ -109,7 +130,7 @@ export const mockProducts = [
     title: "Python para Ciência de Dados",
     author: "Juliana Rocha",
     description: "Pandas, NumPy e visualização de dados.",
-    image: "/assets/books/python-data.jpg",
+    image: pythonanalise,
     category: "Ciência de Dados",
     rating: 4.4,
     formats: [
@@ -122,7 +143,7 @@ export const mockProducts = [
     title: "Deep Learning com TensorFlow",
     author: "Gabriel Lima",
     description: "Redes neurais modernas aplicadas em visão e texto.",
-    image: "/assets/books/deep-learning.jpg",
+    image: deeplearning,
     category: "Inteligência Artificial",
     rating: 4.8,
     formats: [
@@ -135,7 +156,7 @@ export const mockProducts = [
     title: "Design Patterns em Java",
     author: "André Ferreira",
     description: "Padrões de projeto aplicados em Java.",
-    image: "/assets/books/design-patterns.jpg",
+    image: designpatterns,
     category: "Engenharia de Software",
     rating: 4.5,
     formats: [
@@ -148,7 +169,7 @@ export const mockProducts = [
     title: "NoSQL Essencial",
     author: "Camila Duarte",
     description: "MongoDB, Cassandra e bancos não relacionais.",
-    image: "/assets/books/nosql.jpg",
+    image: nosql,
     category: "Banco de Dados",
     rating: 4.1,
     formats: [
@@ -161,7 +182,7 @@ export const mockProducts = [
     title: "Kubernetes em Ação",
     author: "Paulo Gomes",
     description: "Orquestração de containers em larga escala.",
-    image: "/assets/books/kubernetes.jpg",
+    image: kubernetes,
     category: "DevOps",
     rating: 4.6,
     formats: [
@@ -174,7 +195,7 @@ export const mockProducts = [
     title: "Docker para Desenvolvedores",
     author: "Rafael Nunes",
     description: "Criação e gerenciamento de containers Docker.",
-    image: "/assets/books/docker.jpg",
+    image: docker,
     category: "DevOps",
     rating: 4.3,
     formats: [
@@ -187,7 +208,7 @@ export const mockProducts = [
     title: "Segurança em Aplicações Web",
     author: "Marcos Vieira",
     description: "Proteção contra ataques e melhores práticas.",
-    image: "/assets/books/security.jpg",
+    image: segurancaweb,
     category: "Segurança",
     rating: 4.7,
     formats: [
@@ -200,7 +221,7 @@ export const mockProducts = [
     title: "JavaScript Moderno",
     author: "Beatriz Campos",
     description: "ECMAScript, async/await e boas práticas.",
-    image: "/assets/books/js-modern.jpg",
+    image: js,
     category: "Programação",
     rating: 4.5,
     formats: [
@@ -213,7 +234,7 @@ export const mockProducts = [
     title: "Análise de Dados com R",
     author: "Helena Torres",
     description: "Estatística e visualização com R.",
-    image: "/assets/books/r.jpg",
+    image: analiser,
     category: "Ciência de Dados",
     rating: 4.2,
     formats: [
@@ -226,7 +247,7 @@ export const mockProducts = [
     title: "Cloud Computing Essencial",
     author: "Felipe Moreira",
     description: "AWS, Azure e GCP na prática.",
-    image: "/assets/books/cloud.jpg",
+    image: cloudcomputing,
     category: "Infraestrutura",
     rating: 4.4,
     formats: [
@@ -239,7 +260,7 @@ export const mockProducts = [
     title: "Introdução à Ciência de Dados",
     author: "Tatiana Lopes",
     description: "Conceitos e técnicas fundamentais da área.",
-    image: "/assets/books/data-science.jpg",
+    image: cienciadedados,
     category: "Ciência de Dados",
     rating: 4.3,
     formats: [
@@ -252,7 +273,7 @@ export const mockProducts = [
     title: "Engenharia de Requisitos",
     author: "Carolina Almeida",
     description: "Levantamento e documentação de requisitos de software.",
-    image: "/assets/books/requirements.jpg",
+    image: requisitos,
     category: "Engenharia de Software",
     rating: 4.1,
     formats: [
