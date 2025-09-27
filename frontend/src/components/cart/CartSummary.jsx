@@ -3,10 +3,12 @@ import { useCart } from "../../contexts/cart/CartContext";
 import Button from "../ui/Button";
 import { ArrowRight } from "lucide-react";
 
-export default function CartSummary() {
-  // Acessa o total e a lista de itens do contexto
+export default function CartSummary({ hideButton = false }) {
   const { getTotal, cartItems } = useCart();
   const total = getTotal();
+
+  const totalItemCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+  const itemText = totalItemCount > 1 ? 'itens' : 'item';
 
   return (
     <div className="bg-surface rounded-lg shadow-sm p-6 sticky top-24">
@@ -15,7 +17,7 @@ export default function CartSummary() {
       </h2>
       <div className="space-y-2 mb-6">
         <div className="flex justify-between">
-          <span className="text-text-muted">Subtotal ({cartItems.length} {cartItems.length > 1 ? 'itens' : 'item'})</span>
+          <span className="text-text-muted">Subtotal ({totalItemCount} {itemText})</span>
           <span className="font-semibold">R$ {total.toFixed(2)}</span>
         </div>
         <div className="flex justify-between">
@@ -27,11 +29,14 @@ export default function CartSummary() {
         <span>Total</span>
         <span>R$ {total.toFixed(2)}</span>
       </div>
-      <Link to="/checkout">
-        <Button size="large" className="w-full mt-6" icon={<ArrowRight size={20} />}>
-          Finalizar Compra
-        </Button>
-      </Link>
+
+      {!hideButton && (
+        <Link to="/checkout">
+          <Button size="large" className="w-full mt-6" icon={<ArrowRight size={20} />}>
+            Finalizar Compra
+          </Button>
+        </Link>
+      )}
     </div>
   );
 }

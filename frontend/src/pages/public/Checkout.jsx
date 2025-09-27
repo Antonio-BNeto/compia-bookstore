@@ -1,74 +1,76 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useCart } from '../../contexts/cart/CartContext';
 import { useOrders } from '../../contexts/order/OrderContext';
+
 import AddressForm from '../../components/checkout/AddressForm';
 import PaymentForm from '../../components/checkout/PaymentForm';
+import CartSummary from '../../components/cart/CartSummary';
+import Button from '../../components/ui/Button';
 
-export default function Checkout() {
-  const { cart = [], total = 0, clearCart } = useCart();
+export default function CheckoutPage() {
+  const { cartItems, clearCart } = useCart();
   const { placeOrder } = useOrders();
   const navigate = useNavigate();
 
-  const [address, setAddress] = useState(null);
-  const [payment, setPayment] = useState(null);
+  const [addressData, setAddressData] = useState(null);
+  const [paymentData, setPaymentData] = useState(null);
 
   const handleFinish = () => {
-    if (!cart || cart.length === 0) {
-      alert("Seu carrinho está vazio!");
+    if (!addressData) {
+      alert("Por favor, preencha e confirme seu endereço de entrega.");
       return;
     }
-    if (!address || !payment) {
-      alert("Preencha endereço e pagamento antes de finalizar.");
+    if (!paymentData) {
+      alert("Por favor, confirme os dados de pagamento.");
       return;
     }
 
-    const orderData = { cart, total, deliveryAddress: address, payment };
+    const orderData = { 
+      items: cartItems, 
+      deliveryAddress: addressData, 
+      paymentInfo: paymentData 
+    };
+  
     placeOrder(orderData);
     clearCart();
+
     alert("Pedido realizado com sucesso!");
-    navigate("/orders");
+    navigate("/orders"); 
   };
 
-  if (!cart || cart.length === 0) {
-    return <p className="text-center py-16">Seu carrinho está vazio.</p>;
+  if (!cartItems || cartItems.length === 0) {
+    return (
+        <div className="text-center py-16 container mx-auto">
+            <h1 className="text-3xl font-bold mb-4">Seu carrinho está vazio.</h1>
+            <p className="text-text-muted mb-6">Adicione itens ao carrinho antes de prosseguir para o checkout.</p>
+            <Link to="/products">
+                <Button size="large">Explorar Produtos</Button>
+            </Link>
+        </div>
+    );
   }
 
   return (
-    <div className="container mx-auto py-12 px-4">
-      <h1 className="text-3xl font-bold mb-8">Finalizar Pedido</h1>
-      <div className="grid md:grid-cols-3 gap-8">
-        {/* Coluna esquerda */}
-        <div className="md:col-span-2 bg-white p-6 rounded-lg shadow">
-          <h2 className="text-xl font-bold mb-4">Endereço de Entrega</h2>
-          <AddressForm onSubmit={(data) => setAddress(data)} />
-
-          <h2 className="text-xl font-bold mt-8 mb-4">Pagamento</h2>
-          <PaymentForm onSubmit={(data) => setPayment(data)} />
-
-          <button
-            onClick={handleFinish}
-            className="mt-6 bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700"
-          >
-            Finalizar Pedido
-          </button>
+    <div className="container mx-auto py-8">
+      <h1 className="text-4xl font-bold mb-8">Finalizar Compra</h1>
+      <div className="grid lg:grid-cols-3 gap-8 items-start">
+        <div className="lg:col-span-2 space-y-8">
+          <AddressForm onAddressChange={setAddressData} />
+          <PaymentForm onSubmit={setPaymentData} />
         </div>
 
-        {/* Coluna direita */}
-        <div className="bg-white p-6 rounded-lg shadow">
-          <h2 className="text-xl font-bold mb-4">Resumo do Pedido</h2>
-          {cart.map((item) => (
-            <div key={item.id} className="flex justify-between mb-2">
-              <span>
-                {item.title} (x{item.qty})
-              </span>
-              <span>R$ {(item.price * item.qty).toFixed(2)}</span>
-            </div>
-          ))}
-          <div className="flex justify-between font-bold mt-4 pt-4 border-t">
-            <span>Total</span>
-            <span>R$ {total.toFixed(2)}</span>
-          </div>
+        <div className="w-full">
+            <CartSummary hideButton />
+            
+            <Button
+                onClick={handleFinish}
+                size="large"
+                className="w-full mt-4"
+                disabled={!addressData || !paymentData} 
+            >
+                Finalizar Pedido e Pagar
+            </Button>
         </div>
       </div>
     </div>
