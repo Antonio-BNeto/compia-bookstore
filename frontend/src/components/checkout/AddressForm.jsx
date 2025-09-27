@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Button from '../ui/Button';
 import Input from '../ui/Input';
 import { Loader2 } from 'lucide-react';
@@ -38,7 +38,13 @@ export default function AddressForm({ onAddressChange }) {
         const data = await res.json();
         if (data.erro) {
           setError('CEP não encontrado.');
-          setAddress(prev => ({...prev, street: '', neighborhood: '', city: '', state: ''}));
+          setAddress(prev => ({
+            ...prev,
+            street: '',
+            neighborhood: '',
+            city: '',
+            state: ''
+          }));
         } else {
           setAddress(prev => ({
             ...prev,
@@ -55,6 +61,14 @@ export default function AddressForm({ onAddressChange }) {
       }
     }
   };
+
+  // 🔑 Sempre que o address mudar e o CEP for válido, envia para o pai
+  useEffect(() => {
+    const unmaskedZip = address.zipCode.replace(/\D/g, '');
+    if (unmaskedZip.length === 8 && onAddressChange) {
+      onAddressChange(address);
+    }
+  }, [address, onAddressChange]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -73,7 +87,6 @@ export default function AddressForm({ onAddressChange }) {
       <h2 className="text-xl font-bold mb-6">Endereço de Entrega</h2>
       
       <form onSubmit={handleSubmit}>
-        {/* NOVA DISTRIBUIÇÃO EM PARES */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           
           {/* Linha 1: CEP e Bairro */}
@@ -105,7 +118,7 @@ export default function AddressForm({ onAddressChange }) {
             placeholder="Ex: Av. Floriano Peixoto"
             required 
           />
-           <Input 
+          <Input 
             label="Número" 
             name="number" 
             value={address.number} 
@@ -132,7 +145,7 @@ export default function AddressForm({ onAddressChange }) {
             required 
           />
 
-          {/* Linha 4: Complemento (ocupa a linha inteira) */}
+          {/* Linha 4: Complemento */}
           <div className="md:col-span-2">
             <Input 
               label="Complemento (Opcional)" 

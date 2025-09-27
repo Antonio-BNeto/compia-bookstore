@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useCart } from '../../contexts/cart/CartContext';
 import { useOrders } from '../../contexts/order/OrderContext';
@@ -15,6 +15,37 @@ export default function CheckoutPage() {
 
   const [addressData, setAddressData] = useState(null);
   const [paymentData, setPaymentData] = useState(null);
+  const [shippingCost, setShippingCost] = useState(0);
+
+  // 🔹 Calcula o frete sempre que o CEP mudar
+  useEffect(() => {
+    if (addressData?.cep) {
+      calcularFrete(addressData.cep);
+    }
+  }, [addressData?.cep]);
+
+  const calcularFrete = async (cep) => {
+    try {
+      // Exemplo simples de regra: frete fixo por região (poderia ser API real)
+      const cepNum = parseInt(cep.replace(/\D/g, '')); 
+
+      let valorFrete = 0;
+      if (cepNum >= 1000000 && cepNum <= 39999999) {
+        valorFrete = 20; // Sudeste
+      } else if (cepNum >= 40000000 && cepNum <= 65999999) {
+        valorFrete = 30; // Nordeste
+      } else if (cepNum >= 66000000 && cepNum <= 69999999) {
+        valorFrete = 25; // Norte
+      } else {
+        valorFrete = 35; // Outras regiões
+      }
+
+      setShippingCost(valorFrete);
+    } catch (err) {
+      console.error("Erro ao calcular frete:", err);
+      setShippingCost(0);
+    }
+  };
 
   const handleFinish = () => {
     if (!addressData) {
@@ -29,7 +60,8 @@ export default function CheckoutPage() {
     const orderData = { 
       items: cartItems, 
       deliveryAddress: addressData, 
-      paymentInfo: paymentData 
+      paymentInfo: paymentData,
+      shippingCost 
     };
   
     placeOrder(orderData);
@@ -62,6 +94,13 @@ export default function CheckoutPage() {
 
         <div className="w-full">
             <CartSummary hideButton />
+
+            {/* 🔹 Mostra o valor do frete */}
+            {shippingCost > 0 && (
+              <p className="mt-2 text-lg font-semibold">
+                Frete: R$ {shippingCost.toFixed(2)}
+              </p>
+            )}
             
             <Button
                 onClick={handleFinish}
