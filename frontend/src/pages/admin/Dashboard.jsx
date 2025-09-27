@@ -4,8 +4,6 @@ import { useAuth } from "../../contexts/auth/AuthContext";
 import { useProducts } from '../../contexts/product/ProductContext';
 import { useOrders } from '../../contexts/order/OrderContext';
 
-// Supondo que você tenha um mock de clientes/usuários para a contagem
-// Em uma aplicação real, viria de um CustomerContext ou UserContext
 import { mockUsers } from '../../data/users';
 
 const StatCard = ({ title, value, icon, color }) => (
@@ -25,28 +23,21 @@ export default function Dashboard() {
   const { products } = useProducts();
   const { orders } = useOrders();
   
-  // 1. CÁLCULOS DINÂMICOS
-  // Usamos 'useMemo' para evitar recalcular esses valores a cada renderização
   const stats = useMemo(() => {
-    // Calcula o faturamento total somando o total de cada pedido
     const totalRevenue = orders.reduce((acc, order) => {
       const orderTotal = order.items.reduce((sum, item) => sum + item.price * item.quantity, 0);
       return acc + orderTotal;
     }, 0);
 
-    // Formata o valor para a moeda local (BRL)
     const formattedRevenue = totalRevenue.toLocaleString('pt-BR', {
       style: 'currency',
       currency: 'BRL',
     });
 
-    // Conta o número total de pedidos
     const totalOrders = orders.length;
 
-    // Conta o número total de produtos no catálogo
     const totalProducts = products.length;
 
-    // Conta o número de clientes (usuários com a role 'user')
     const totalCustomers = mockUsers.filter(u => u.role === 'user').length;
     
     return {
@@ -63,7 +54,6 @@ export default function Dashboard() {
       <h1 className="text-3xl font-bold mb-2">Dashboard</h1>
       <p className="text-text-muted mb-8">Bem-vindo de volta, {user?.name}!</p>
 
-      {/* 2. CARDS DE ESTATÍSTICAS COM DADOS DINÂMICOS */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         <StatCard
           title="Vendas Totais"
@@ -91,7 +81,6 @@ export default function Dashboard() {
         />
       </div>
 
-      {/* Gráfico Placeholder */}
       <div className="mt-10 bg-surface p-6 rounded-lg shadow-sm">
         <h2 className="text-xl font-bold mb-4">Visão Geral das Vendas</h2>
         <div className="h-64 bg-gray-200 dark:bg-gray-700 rounded-md flex items-center justify-center">
