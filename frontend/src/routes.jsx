@@ -8,7 +8,7 @@ import PublicLayout from "./layouts/PublicLayout";
 import AuthLayout from "./layouts/AuthLayout";
 import AdminLayout from "./layouts/AdminLayout";
 
-// Páginas (sugestão: pode remover o sufixo 'Page' para ficar mais curto)
+// Páginas (lazy loading)
 const Home = lazy(() => import("./pages/public/Home"));
 const ProductDetails = lazy(() => import("./pages/public/ProductDetail"));
 const Cart = lazy(() => import("./pages/public/Cart"));
@@ -41,9 +41,11 @@ export default function RoutesWrapper() {
             <Route path="/products/:id" element={<ProductDetails />} />
             <Route path="/cart" element={<Cart />} />
             
-            {/* Rotas que exigem apenas login (qualquer papel) */}
+            {/* Checkout aberto (sem login obrigatório) */}
+            <Route path="/checkout" element={<Checkout />} />
+
+            {/* Orders protegido (só logado) */}
             <Route element={<ProtectedRoute />}>
-              <Route path="/checkout" element={<Checkout />} />
               <Route path="/orders" element={<Orders />} />
             </Route>
           </Route>
@@ -56,7 +58,6 @@ export default function RoutesWrapper() {
           </Route>
 
           {/* === ROTAS PROTEGIDAS (ADMIN) === */}
-          {/* SUGESTÃO: Rotas de admin agrupadas sob um único caminho pai */}
           <Route 
             path="/admin" 
             element={

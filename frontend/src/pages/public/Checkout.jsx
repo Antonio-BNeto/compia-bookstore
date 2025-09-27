@@ -1,69 +1,74 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../../contexts/cart/CartContext';
 import { useOrders } from '../../contexts/order/OrderContext';
-import Button from '../../components/ui/Button';
-import { CreditCard, CheckCircle } from 'lucide-react';
+import AddressForm from '../../components/checkout/AddressForm';
+import PaymentForm from '../../components/checkout/PaymentForm';
 
 export default function Checkout() {
-  const { cart, total, clearCart } = useCart();
+  const { cart = [], total = 0, clearCart } = useCart();
   const { placeOrder } = useOrders();
   const navigate = useNavigate();
 
-  const handlePlaceOrder = () => {
-    if (cart.length === 0) return;
+  const [address, setAddress] = useState(null);
+  const [payment, setPayment] = useState(null);
 
-    // 1. Usa a função do OrderContext
-    placeOrder(cart);
+  const handleFinish = () => {
+    if (!cart || cart.length === 0) {
+      alert("Seu carrinho está vazio!");
+      return;
+    }
+    if (!address || !payment) {
+      alert("Preencha endereço e pagamento antes de finalizar.");
+      return;
+    }
 
-    // 2. Limpa o carrinho usando a função do CartContext
+    const orderData = { cart, total, deliveryAddress: address, payment };
+    placeOrder(orderData);
     clearCart();
-
-    // 3. Redireciona para uma página de sucesso ou histórico de pedidos
-    alert('Pedido realizado com sucesso!');
-    navigate('/orders'); // Supondo que você tenha uma página de pedidos
+    alert("Pedido realizado com sucesso!");
+    navigate("/orders");
   };
 
-  if (cart.length === 0) {
-    return (
-      <div className="container mx-auto text-center py-16">
-          <CheckCircle size={64} className="mx-auto text-success mb-4" />
-          <h1 className="text-2xl font-bold">Seu carrinho está vazio.</h1>
-          <p className="text-text-muted">Não há nada para finalizar aqui.</p>
-      </div>
-    );
+  if (!cart || cart.length === 0) {
+    return <p className="text-center py-16">Seu carrinho está vazio.</p>;
   }
 
   return (
     <div className="container mx-auto py-12 px-4">
       <h1 className="text-3xl font-bold mb-8">Finalizar Pedido</h1>
       <div className="grid md:grid-cols-3 gap-8">
-        {/* Formulários de Endereço e Pagamento (Esquerda) */}
-        <div className="md:col-span-2 bg-surface p-6 rounded-lg shadow-sm">
-            <h2 className="text-xl font-bold mb-4">Detalhes de Pagamento e Entrega</h2>
-            <p className="text-text-muted">
-                (Aqui entrariam os componentes AddressForm.jsx e PaymentForm.jsx)
-            </p>
+        {/* Coluna esquerda */}
+        <div className="md:col-span-2 bg-white p-6 rounded-lg shadow">
+          <h2 className="text-xl font-bold mb-4">Endereço de Entrega</h2>
+          <AddressForm onSubmit={(data) => setAddress(data)} />
+
+          <h2 className="text-xl font-bold mt-8 mb-4">Pagamento</h2>
+          <PaymentForm onSubmit={(data) => setPayment(data)} />
+
+          <button
+            onClick={handleFinish}
+            className="mt-6 bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700"
+          >
+            Finalizar Pedido
+          </button>
         </div>
 
-        {/* Resumo do Pedido (Direita) */}
-        <div className="bg-surface p-6 rounded-lg shadow-sm">
-          <h2 className="text-xl font-bold border-b pb-4 mb-4">Resumo</h2>
-          {cart.map(item => (
-            <div key={item.id} className="flex justify-between text-sm mb-2">
-              <span>{item.title} (x{item.qty})</span>
-              <span className="font-medium">R$ {(item.price * item.qty).toFixed(2)}</span>
+        {/* Coluna direita */}
+        <div className="bg-white p-6 rounded-lg shadow">
+          <h2 className="text-xl font-bold mb-4">Resumo do Pedido</h2>
+          {cart.map((item) => (
+            <div key={item.id} className="flex justify-between mb-2">
+              <span>
+                {item.title} (x{item.qty})
+              </span>
+              <span>R$ {(item.price * item.qty).toFixed(2)}</span>
             </div>
           ))}
-          <div className="flex justify-between font-bold text-lg border-t pt-4 mt-4">
+          <div className="flex justify-between font-bold mt-4 pt-4 border-t">
             <span>Total</span>
             <span>R$ {total.toFixed(2)}</span>
           </div>
-          <Button 
-            onClick={handlePlaceOrder} 
-            className="w-full mt-6 text-lg py-3 flex items-center justify-center gap-2"
-          >
-            <CreditCard size={20}/> Pagar e Finalizar
-          </Button>
         </div>
       </div>
     </div>
