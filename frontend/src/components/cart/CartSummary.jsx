@@ -16,6 +16,7 @@ export default function CartSummary({ hideButton = false, address }) {
 
   useEffect(() => {
     async function fetchShipping() {
+      // só calcula frete se o CEP existir
       if (!address?.zipCode) return;
 
       const unmaskedZip = address.zipCode.replace(/\D/g, "");
@@ -26,21 +27,13 @@ export default function CartSummary({ hideButton = false, address }) {
 
         const response = await fetch("http://localhost:8080/api/v1/shipping", {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            to: {
-              postal_code: unmaskedZip,
-            },
-          }),
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ to: { postal_code: unmaskedZip } }),
         });
 
         if (!response.ok) throw new Error("Erro ao calcular frete");
 
         const data = await response.json();
-
-        // supondo que API retorna { price: 12.5 }
         setShipping(data.price ?? 0);
       } catch (error) {
         console.error(error);
@@ -51,7 +44,7 @@ export default function CartSummary({ hideButton = false, address }) {
     }
 
     fetchShipping();
-  }, [address]);
+  }, [address]); // dispara sempre que o address muda
 
   const finalTotal = total + shipping;
 
@@ -60,6 +53,7 @@ export default function CartSummary({ hideButton = false, address }) {
       <h2 className="text-2xl font-bold border-b border-gray-200 dark:border-gray-700 pb-4 mb-4">
         Resumo do Pedido
       </h2>
+
       <div className="space-y-2 mb-6">
         <div className="flex justify-between">
           <span className="text-text-muted">
@@ -67,6 +61,7 @@ export default function CartSummary({ hideButton = false, address }) {
           </span>
           <span className="font-semibold">R$ {total.toFixed(2)}</span>
         </div>
+
         <div className="flex justify-between">
           <span className="text-text-muted">Frete</span>
           <span className="font-semibold text-success">
@@ -74,6 +69,7 @@ export default function CartSummary({ hideButton = false, address }) {
           </span>
         </div>
       </div>
+
       <div className="flex justify-between font-bold text-xl border-t border-gray-200 dark:border-gray-700 pt-4">
         <span>Total</span>
         <span>R$ {finalTotal.toFixed(2)}</span>
