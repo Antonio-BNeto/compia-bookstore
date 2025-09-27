@@ -11,6 +11,33 @@ export default function AddressForm({ onSubmit }) {
   const [zipCode, setZipCode] = useState('');
   const [error, setError] = useState('');
 
+  const handleZipChange = async (e) => {
+    const zip = e.target.value.replace(/\D/g, ''); // remove qualquer caractere que não seja número
+    setZipCode(zip);
+
+    if (zip.length === 8) { // CEP completo
+      try {
+        const res = await fetch(`https://viacep.com.br/ws/${zip}/json/`);
+        const data = await res.json();
+
+        if (data.erro) {
+          setError('CEP não encontrado.');
+          setNeighborhood('');
+          setCity('');
+          setState('');
+        } else {
+          setNeighborhood(data.bairro || '');
+          setCity(data.localidade || '');
+          setState(data.uf || '');
+          setStreet(data.logradouro || '');
+          setError('');
+        }
+      } catch {
+        setError('Erro ao consultar CEP.');
+      }
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     setError('');
@@ -20,14 +47,7 @@ export default function AddressForm({ onSubmit }) {
       return;
     }
 
-    const deliveryAddress = {
-      street,
-      number,
-      neighborhood,
-      city,
-      state,
-      zipCode
-    };
+    const deliveryAddress = { street, number, neighborhood, city, state, zipCode };
 
     if (onSubmit) {
       onSubmit(deliveryAddress);
@@ -36,6 +56,14 @@ export default function AddressForm({ onSubmit }) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
+      <Input
+        label="CEP"
+        type="text"
+        placeholder="Digite seu CEP"
+        value={zipCode}
+        onChange={handleZipChange}
+        required
+      />
       <Input
         label="Rua"
         type="text"
@@ -55,7 +83,7 @@ export default function AddressForm({ onSubmit }) {
       <Input
         label="Bairro"
         type="text"
-        placeholder="Digite seu bairro"
+        placeholder="Bairro"
         value={neighborhood}
         onChange={(e) => setNeighborhood(e.target.value)}
         required
@@ -63,7 +91,7 @@ export default function AddressForm({ onSubmit }) {
       <Input
         label="Cidade"
         type="text"
-        placeholder="Digite sua cidade"
+        placeholder="Cidade"
         value={city}
         onChange={(e) => setCity(e.target.value)}
         required
@@ -71,17 +99,9 @@ export default function AddressForm({ onSubmit }) {
       <Input
         label="Estado"
         type="text"
-        placeholder="Digite seu estado"
+        placeholder="Estado"
         value={state}
         onChange={(e) => setState(e.target.value)}
-        required
-      />
-      <Input
-        label="CEP"
-        type="text"
-        placeholder="Digite seu CEP"
-        value={zipCode}
-        onChange={(e) => setZipCode(e.target.value)}
         required
       />
 
