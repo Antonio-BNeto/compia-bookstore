@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { Outlet, NavLink } from "react-router-dom"; // Garanta que 'Outlet' está importado
+import { Outlet, NavLink } from "react-router-dom";
 import { useAuth } from "../contexts/auth/AuthContext";
 import { LayoutDashboard, Package, ShoppingCart, Users, LogOut, Menu, X, BookOpen } from "lucide-react";
 import Button from "../components/ui/Button";
+import ThemeToggle from "../components/ui/ThemeToggle";
 
 const adminLinks = [
   { to: "/admin", text: "Dashboard", icon: <LayoutDashboard size={20} /> },
@@ -16,10 +17,16 @@ export default function AdminLayout() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const SidebarLink = ({ to, icon, text }) => (
-    <NavLink to={to} end={to === "/admin"} onClick={() => setIsSidebarOpen(false)}
-      className={({ isActive }) => `flex items-center gap-4 p-3 rounded-lg transition-colors text-lg md:text-base ${
-          isActive ? "bg-primary text-white font-semibold" : "hover:bg-gray-100 dark:hover:bg-gray-800"
-      }`}
+    <NavLink
+      to={to}
+      end={to === "/admin"}
+      onClick={() => setIsSidebarOpen(false)}
+      className={({ isActive }) =>
+        `flex items-center gap-4 p-3 rounded-lg transition-colors text-lg md:text-base ${isActive
+          ? "bg-primary text-white font-semibold"
+          : "hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300"
+        }`
+      }
     >
       {icon}
       <span>{text}</span>
@@ -27,33 +34,89 @@ export default function AdminLayout() {
   );
 
   return (
-    <div className="min-h-screen bg-bg text-text flex">
-      <aside className={`fixed inset-y-0 left-0 z-50 w-64 bg-surface border-r border-gray-200 dark:border-gray-800 p-4 flex flex-col transform transition-transform duration-300 ease-in-out lg:translate-x-0 ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}`}>
+    <div className="min-h-screen bg-bg text-text flex transition-colors duration-200">
+      <aside
+        className={`fixed inset-y-0 left-0 z-50
+           w-64 bg-surface border-r
+          border-gray-200 
+          dark:border-gray-800 p-4 flex flex-col transform transition-transform duration-300 
+          ease-in-out lg:translate-x-0 ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+          }`}
+      >
         <div className="flex items-center justify-between mb-8">
-            <div className="flex items-center gap-2 text-xl font-bold text-primary">
-                <BookOpen className="h-7 w-7" /><span>Admin</span>
-            </div>
-            <Button onClick={() => setIsSidebarOpen(false)} variant="ghost" size="icon" className="lg:hidden"><X size={24} /></Button>
+          <div className="flex items-center gap-2 text-xl font-bold text-primary">
+            <BookOpen className="h-7 w-7" />
+            <span>Admin</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <Button
+              onClick={() => setIsSidebarOpen(false)}
+              variant="ghost"
+              size="icon"
+              className="lg:hidden"
+            >
+              <X size={24} />
+            </Button>
+          </div>
         </div>
+
         <nav className="flex-grow">
-            <ul className="space-y-2">{adminLinks.map((link) => (<li key={link.to}><SidebarLink {...link} /></li>))}</ul>
+          <ul className="space-y-2">
+            {adminLinks.map((link) => (
+              <li key={link.to}>
+                <SidebarLink {...link} />
+              </li>
+            ))}
+          </ul>
         </nav>
+
         <div>
-            <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
-                <p className="text-sm font-semibold">{user?.name || "Admin"}</p>
-                <p className="text-xs text-text-muted capitalize">{user?.role}</p>
-                <Button onClick={logout} variant="ghost" className="w-full justify-start mt-4 text-error hover:bg-error/10" icon={<LogOut size={18} />}>Sair</Button>
-            </div>
+          <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
+            <p className="font-semibold text-base dark:text-gray-200">
+              {user?.name || "Admin"}
+            </p>
+            <p className="text-xs text-text-muted capitalize">
+              {user?.role}
+            </p>
+            <Button
+              onClick={logout}
+              className="w-full justify-start mt-4 text-error hover:text-red-600"
+              icon={<LogOut size={18} />}
+            >
+              Sair
+            </Button>
+          </div>
         </div>
       </aside>
-      <div className={`fixed inset-0 bg-black/40 z-40 lg:hidden ${isSidebarOpen ? "block" : "hidden"}`} onClick={() => setIsSidebarOpen(false)}></div>
+
+      <div
+        className={`fixed inset-0 bg-black/40 z-40 lg:hidden ${isSidebarOpen ? "block" : "hidden"
+          }`}
+        onClick={() => setIsSidebarOpen(false)}
+      ></div>
+
       <div className="flex flex-col flex-1 lg:ml-64">
-        <header className="sticky top-0 z-30 flex items-center h-16 px-6 bg-surface/80 backdrop-blur-sm border-b border-gray-200 dark:border-gray-800 lg:hidden">
-            <Button onClick={() => setIsSidebarOpen(true)} variant="ghost" size="icon"><Menu size={24} /></Button>
-            <h1 className="text-lg font-semibold ml-4">Painel Administrativo</h1>
+        <header className="sticky top-0 z-30 flex justify-between items-center h-16 px-6 bg-surface/80 backdrop-blur-sm border-b border-gray-200 dark:border-gray-800">
+          <div className="flex items-center">
+            <Button
+            className="lg:hidden"
+            onClick={() => setIsSidebarOpen(true)}
+            variant="ghost"
+            size="icon"
+          >
+            <Menu size={24} />
+          </Button>
+          <h1 className="text-lg font-semibold ml-4">
+            Painel Administrativo
+          </h1>
+          </div>
+          <div className="flex justify-end px-6 pt-4">
+            <ThemeToggle />
+          </div>
         </header>
+
         <main className="flex-1 p-6 md:p-8">
-            <Outlet />
+          <Outlet />
         </main>
       </div>
     </div>

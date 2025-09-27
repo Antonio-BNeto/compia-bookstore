@@ -2,7 +2,6 @@ import { mockProducts } from '../data/products';
 import { mockUsers } from '../data/users';
 
 // --- FUNÇÃO DE INICIALIZAÇÃO ---
-// Garante que o "banco de dados" no localStorage tenha dados iniciais na primeira vez que o app roda.
 export const initializeDatabase = () => {
   if (!localStorage.getItem('products')) {
     localStorage.setItem('products', JSON.stringify(mockProducts));
@@ -15,8 +14,6 @@ export const initializeDatabase = () => {
   }
 };
 
-// --- SERVIÇO DE API ---
-// Objeto que agrupa todas as nossas "chamadas de API" falsas.
 export const api = {
   // === API DE PRODUTOS ===
 

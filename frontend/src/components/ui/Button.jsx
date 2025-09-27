@@ -10,36 +10,59 @@ const Button = ({
   icon = null,
   ...props
 }) => {
-  // Estilos base para todos os botões
   const baseClasses = `
     inline-flex items-center justify-center font-semibold rounded-lg 
     transition-all duration-200 focus:outline-none focus:ring-2 
     focus:ring-offset-2 dark:focus:ring-offset-surface
   `;
 
-  // Mapeamento de variantes para classes Tailwind
+  // Variantes baseadas nas cores do tema (light/dark)
   const variantClasses = {
-    primary: 'bg-primary text-white hover:bg-primary/90 focus:ring-primary',
-    secondary: 'bg-gray-200 text-text hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 focus:ring-gray-500',
-    success: 'bg-success text-white hover:bg-green-700 focus:ring-success',
-    error: 'bg-error text-white hover:bg-red-700 focus:ring-error',
-    outline: 'border border-gray-300 bg-transparent text-text hover:bg-gray-100 dark:border-gray-600 dark:hover:bg-gray-700 focus:ring-primary',
-    ghost: 'bg-transparent text-text hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-primary' // Adicionei a variante "ghost"
+    primary: `
+      bg-[color:var(--color-primary)] text-white
+      hover:bg-[color:var(--color-primary-hover)]
+      focus:ring-[color:var(--color-primary)]
+    `,
+    secondary: `
+      bg-[color:var(--color-accent)] text-white
+      hover:bg-[color:var(--color-accent)]/90
+      focus:ring-[color:var(--color-accent)]
+    `,
+    success: `
+      bg-[color:var(--color-success)] text-white
+      hover:bg-[color:var(--color-success)]/90
+      focus:ring-[color:var(--color-success)]
+    `,
+    error: `
+      bg-[color:var(--color-error)] text-white
+      hover:bg-[color:var(--color-error)]/90
+      focus:ring-[color:var(--color-error)]
+    `,
+    outline: `
+      border border-[color:var(--color-text-muted)]
+      bg-transparent text-[color:var(--color-text)]
+      hover:bg-[color:var(--color-primary-light)]/20
+      dark:hover:bg-[color:var(--color-primary-light)]/10
+      focus:ring-[color:var(--color-primary)]
+    `,
+    ghost: `
+      bg-transparent text-[color:var(--color-text)]
+      hover:bg-[color:var(--color-primary-light)]/20
+      dark:hover:bg-[color:var(--color-primary-light)]/10
+      focus:ring-[color:var(--color-primary)]
+    `
   };
 
-  // Mapeamento de tamanhos
   const sizeClasses = {
     small: 'px-3 py-1.5 text-sm gap-1.5',
     medium: 'px-4 py-2 gap-2',
     large: 'px-6 py-3 text-lg gap-2.5',
-    icon: 'p-2' // Para botões que contêm apenas um ícone
+    icon: 'p-2'
   };
 
-  // Classes condicionais
   const disabledClass = disabled ? 'opacity-50 cursor-not-allowed' : '';
   const loadingClass = loading ? 'cursor-wait' : '';
 
-  // Combinação de todas as classes
   const buttonClasses = `
     ${baseClasses}
     ${variantClasses[variant]}

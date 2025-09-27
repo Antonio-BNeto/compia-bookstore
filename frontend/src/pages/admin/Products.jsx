@@ -38,7 +38,7 @@ export default function AdminProducts() {
       </div>
       <div className="bg-surface rounded-lg shadow-sm overflow-x-auto">
         <table className="w-full text-left">
-          <thead className="bg-gray-50 dark:bg-gray-800">
+          <thead className="bg-gray-50 dark:bg-gray-00">
             <tr>
               <th className="p-4 font-semibold">Produto</th>
               <th className="p-4 font-semibold">Categoria</th>
