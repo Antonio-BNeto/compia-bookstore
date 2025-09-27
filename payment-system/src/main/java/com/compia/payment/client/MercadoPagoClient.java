@@ -62,7 +62,7 @@ public class MercadoPagoClient {
                     .items(items)
                     .payer(payer)
                     .backUrls(backUrls)
-                    .externalReference(orderNumber) // Link to your order ID
+                    .externalReference(orderNumber)
                     .build();
 
             Preference preference = client.create(request);
