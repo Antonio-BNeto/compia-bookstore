@@ -1,0 +1,59 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Tema padrão (claro) */
+:root {
+  --color-primary: #2563eb;          /* azul */
+  --color-primary-hover: #1e40af;    /* azul escuro */
+  --color-primary-light: #3b82f6;    /* azul claro */
+
+  --color-accent: #9333ea;           /* roxo */
+  --color-success: #16a34a;          /* verde */
+  --color-error: #dc2626;            /* vermelho */
+
+  --color-bg: #f9fafb;               /* fundo geral */
+  --color-surface: #ffffff;          /* cards/superfícies */
+  --color-text: #111827;             /* texto padrão */
+  --color-text-muted: #6b7280;       /* cinza */
+  --color-dark: #0f172a;             /* quase preto */
+}
+
+/* Tema escuro */
+.dark {
+  --color-primary: #60a5fa;
+  --color-primary-hover: #3b82f6;
+  --color-primary-light: #93c5fd;
+
+  --color-accent: #c084fc;
+  --color-success: #22c55e;
+  --color-error: #ef4444;
+
+  --color-bg: #0f172a;
+  --color-surface: #1e293b;
+  --color-text: #f9fafb;
+  --color-text-muted: #94a3b8;
+  --color-dark: #ffffff;
+}
+
+/* Globais */
+html, body {
+  @apply bg-bg text-text font-sans antialiased;
+}
+
+/* Botões */
+.btn {
+  @apply px-4 py-2 rounded-lg font-medium transition-colors;
+}
+
+.btn-primary {
+  @apply bg-primary text-white hover:bg-primary-hover;
+}
+
+.btn-secondary {
+  @apply bg-accent text-white hover:opacity-90;
+}
+
+.card {
+  @apply bg-surface rounded-2xl shadow-md p-6 transition hover:shadow-lg;
+}
