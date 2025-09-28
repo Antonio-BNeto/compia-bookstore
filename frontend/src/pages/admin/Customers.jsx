@@ -16,7 +16,7 @@ export default function Customers() {
       <h1 className="text-3xl font-bold mb-8">Clientes Cadastrados</h1>
       <div className="bg-surface rounded-lg shadow-sm overflow-x-auto">
         <table className="w-full text-left">
-          <thead className="bg-gray-50 dark:bg-gray-800">
+          <thead>
             <tr>
               <th className="p-4 font-semibold">ID</th>
               <th className="p-4 font-semibold">Nome do Cliente</th>

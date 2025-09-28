@@ -22,10 +22,13 @@ export default function AdminLayout() {
       end={to === "/admin"}
       onClick={() => setIsSidebarOpen(false)}
       className={({ isActive }) =>
-        `flex items-center gap-4 p-3 rounded-lg transition-colors text-lg md:text-base ${isActive
-          ? "bg-primary text-white font-semibold"
-          : "hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300"
-        }`
+        `
+              flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors
+              ${isActive
+          ? "bg-blue-600 text-white"
+          : "text-gray-500 hover:bg-blue-500/20 hover:text-blue-600"
+        }
+            `
       }
     >
       {icon}
@@ -99,19 +102,16 @@ export default function AdminLayout() {
         <header className="sticky top-0 z-30 flex justify-between items-center h-16 px-6 bg-surface/80 backdrop-blur-sm border-b border-gray-200 dark:border-gray-800">
           <div className="flex items-center">
             <Button
-            className="lg:hidden"
-            onClick={() => setIsSidebarOpen(true)}
-            variant="ghost"
-            size="icon"
-          >
-            <Menu size={24} />
-          </Button>
-          <h1 className="text-lg font-semibold ml-4">
-            Painel Administrativo
-          </h1>
+              className="lg:hidden"
+              onClick={() => setIsSidebarOpen(true)}
+              icon={<Menu size={22}/>}
+            />
+            <h1 className="text-lg font-semibold ml-4">
+              Painel Administrativo
+            </h1>
           </div>
           <div className="flex justify-end px-6 pt-4">
-            <ThemeToggle />
+            <ThemeToggle className="hover:bg-[color:var(--color-primary-hover)]" />
           </div>
         </header>
 

@@ -7,37 +7,30 @@ const Card = ({
   ...props 
 }) => {
   return (
-    <div
-      className={`
-        bg-[color:var(--color-surface)] 
-        text-[color:var(--color-text)]
-        rounded-2xl shadow-md p-6 
-        border border-[color:var(--color-text-muted)]/20
-        ${hover ? 'transition-shadow duration-300 hover:shadow-lg' : ''}
-        ${className}
-      `}
-      {...props}
-    >
-      {/* Cabeçalho */}
-      {title && (
-        <div className="mb-4 pb-2 border-b border-[color:var(--color-text-muted)]/20">
-          <h3 className="text-lg font-semibold">{title}</h3>
-        </div>
-      )}
-
-      {/* Conteúdo */}
-      <div>
-        {children}
+  <div
+    className={`
+      bg-surface rounded-lg shadow-sm p-6 border border-gray-200 dark:border-gray-700
+      ${hover ? 'transition-shadow duration-300 hover:shadow-xl' : ''}
+      ${className}
+    `}
+    {...props}
+  >
+    {/* O conteúdo interno permanece o mesmo */}
+    {title && (
+      <div className="mb-4 pb-2 border-b border-gray-200 dark:border-gray-700">
+        <h3 className="text-lg font-semibold text-text dark:text-text">{title}</h3>
       </div>
-
-      {/* Rodapé */}
-      {footer && (
-        <div className="mt-4 pt-4 border-t border-[color:var(--color-text-muted)]/20">
-          {footer}
-        </div>
-      )}
+    )}
+    <div className="text-text dark:text-text">
+      {children}
     </div>
-  );
+    {footer && (
+      <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+        {footer}
+      </div>
+    )}
+  </div>
+);
 };
 
 export default Card;

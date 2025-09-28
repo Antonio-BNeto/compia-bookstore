@@ -54,7 +54,7 @@ export default function PublicLayout() {
                 <div className="h-6 w-px bg-gray-300 dark:bg-gray-600"></div>
                 
                 <Link to="/account" className="relative p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors" title="Minha Conta">
-                  <User className="h-6 w-6" />
+                  <User className="h-6 w-6 hover:text-primary" />
                 </Link>
 
                 {user.role === "user" && (
@@ -68,13 +68,13 @@ export default function PublicLayout() {
                   </Link>
                 )}
 
-                <Button onClick={logout} variant="ghost" className="hover:text-error">
+                <Button onClick={logout} variant="outline" className="hover:text-error">
                   Sair
                 </Button>
               </>
             )}
             
-            <ThemeToggle />
+            <ThemeToggle className="hover:bg-[color:var(--color-primary)]"/>
           </div>
 
           {/* Mobile menu button & Icons */}
@@ -89,7 +89,7 @@ export default function PublicLayout() {
                 )}
               </Link>
             )}
-            <ThemeToggle />
+            <ThemeToggle className="hover:bg-[color:var(--color-primary)] text-white" />
             <Button onClick={() => setIsMenuOpen(!isMenuOpen)} variant="ghost" size="icon" aria-label="Abrir menu">
               {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
             </Button>

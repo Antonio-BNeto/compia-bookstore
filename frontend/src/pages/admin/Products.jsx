@@ -38,7 +38,7 @@ export default function AdminProducts() {
       </div>
       <div className="bg-surface rounded-lg shadow-sm overflow-x-auto">
         <table className="w-full text-left">
-          <thead className="bg-gray-50 dark:bg-gray-00">
+          <thead>
             <tr>
               <th className="p-4 font-semibold">Produto</th>
               <th className="p-4 font-semibold">Categoria</th>
@@ -64,8 +64,8 @@ export default function AdminProducts() {
                   <td className="p-4">R$ {physicalFormat.price?.toFixed(2) ?? 'N/A'}</td>
                   <td className="p-4">
                     <div className="flex gap-2">
-                      <Button onClick={() => handleOpenEditModal(product)} variant="outline" size="icon" title="Editar"><Edit size={16} /></Button>
-                      <Button onClick={() => handleDelete(product.id, product.title)} variant="destructive" size="icon" title="Excluir"><Trash2 size={16} /></Button>
+                      <Button onClick={() => handleOpenEditModal(product)} variant="outline" icon={<Edit size={16} />} className='hover:text-success' title="Editar"></Button>
+                      <Button onClick={() => handleDelete(product.id, product.title)} variant="destructive" icon={<Trash2 size={16} />} className='hover:text-red-400' title="Excluir"></Button>
                     </div>
                   </td>
                 </tr>
