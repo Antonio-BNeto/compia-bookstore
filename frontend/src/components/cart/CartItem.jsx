@@ -28,19 +28,17 @@ export default function CartItem({ item }) {
           <Button
             onClick={() => decreaseQuantity(item.sku)}
             disabled={item.quantity <= 1}
+            icon={<Minus size={16}/>}
             className="p-2 disabled:opacity-50"
             aria-label="Diminuir quantidade"
-          >
-            <Minus size={16} />
-          </Button>
+          />
           <span className="px-3 font-semibold text-center w-12">{item.quantity}</span>
           <Button 
             onClick={() => increaseQuantity(item.sku)} 
             className="p-2"
+            icon={<Plus size={16}/>}
             aria-label="Aumentar quantidade"
-          >
-            <Plus size={16} />
-          </Button>
+          />
         </div>
         
         <p className="font-bold text-primary text-lg w-24 text-right">
@@ -49,6 +47,7 @@ export default function CartItem({ item }) {
 
         <Button
           onClick={() => removeFromCart(item.sku)}
+          icon={<Trash2 size={14} />}
           className="text-text-muted hover:text-error transition-colors text-sm flex items-center gap-1"
         >
           <Trash2 size={14} /> Remover

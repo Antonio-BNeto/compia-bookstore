@@ -49,7 +49,7 @@ export default function CartSummary({ hideButton = false, address }) {
   const finalTotal = total + shipping;
 
   return (
-    <div className="bg-surface rounded-lg shadow-sm p-6 sticky top-24">
+    <div className="bg-surface rounded-lg shadow-sm p-6 top-24">
       <h2 className="text-2xl font-bold border-b border-gray-200 dark:border-gray-700 pb-4 mb-4">
         Resumo do Pedido
       </h2>

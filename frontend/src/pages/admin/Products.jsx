@@ -1,53 +1,82 @@
-import { useContext } from "react";
-import { ProductContext } from "../../contexts/product/ProductContext";
-import Button from "../../components/ui/Button";
-import { PlusCircle, Edit, Trash2 } from "lucide-react";
+import { useState } from 'react';
+import { useProducts } from '../../contexts/product/ProductContext';
+import Button from '../../components/ui/Button';
+import Modal from '../../components/ui/Modal';
+import ProductForm from '../../components/admin/ProductForm';
+import { PlusCircle, Edit, Trash2 } from 'lucide-react';
 
-export default function Products() {
-  const { products } = useContext(ProductContext);
+export default function AdminProducts() {
+  const { products, loading, deleteProduct } = useProducts();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingProduct, setEditingProduct] = useState(null);
+
+  const handleDelete = (productId, productTitle) => {
+    if (window.confirm(`Tem certeza que deseja excluir o produto "${productTitle}"?`)) {
+      deleteProduct(productId);
+    }
+  };
+
+  const handleOpenNewModal = () => {
+    setEditingProduct(null);
+    setIsModalOpen(true);
+  };
+  
+  const handleOpenEditModal = (product) => {
+    setEditingProduct(product);
+    setIsModalOpen(true);
+  };
+
+  const handleModalClose = () => setIsModalOpen(false);
+
+  if (loading) return <div>Carregando produtos...</div>;
 
   return (
-    <div className="p-6 md:p-8">
+    <div>
       <div className="flex items-center justify-between mb-8">
         <h1 className="text-3xl font-bold">Gerenciar Produtos</h1>
-        <Button className="flex items-center gap-2">
-          <PlusCircle size={18} />
-          Adicionar Produto
-        </Button>
+        <Button onClick={handleOpenNewModal} icon={<PlusCircle size={18} />}>Adicionar Produto</Button>
       </div>
-
-      {/* Tabela de Produtos */}
-      <div className="bg-surface rounded-lg shadow-sm overflow-hidden">
+      <div className="bg-surface rounded-lg shadow-sm overflow-x-auto">
         <table className="w-full text-left">
-          <thead className="bg-gray-50 dark:bg-gray-800">
+          <thead>
             <tr>
-              <th className="p-4 font-semibold">Título</th>
-              <th className="p-4 font-semibold">Autor</th>
-              <th className="p-4 font-semibold">Preço</th>
+              <th className="p-4 font-semibold">Produto</th>
+              <th className="p-4 font-semibold">Categoria</th>
+              <th className="p-4 font-semibold">Estoque (Físico)</th>
+              <th className="p-4 font-semibold">Preço (Físico)</th>
               <th className="p-4 font-semibold">Ações</th>
             </tr>
           </thead>
           <tbody>
-            {products.map(product => (
-              <tr key={product.id} className="border-t border-gray-200 dark:border-gray-700">
-                <td className="p-4">{product.title}</td>
-                <td className="p-4 text-text-muted">{product.author}</td>
-                <td className="p-4 font-mono">R$ {product.price.toFixed(2)}</td>
-                <td className="p-4">
-                  <div className="flex gap-2">
-                    <Button variant="outline" size="icon">
-                      <Edit size={16} />
-                    </Button>
-                    <Button variant="destructive" size="icon">
-                      <Trash2 size={16} />
-                    </Button>
-                  </div>
-                </td>
-              </tr>
-            ))}
+            {products.map(product => {
+              const physicalFormat = product.formats.find(f => f.type === 'Físico') || {};
+              return (
+                <tr key={product.id} className="border-t">
+                  <td className="p-4 flex items-center gap-4">
+                    <img src={product.image} alt={product.title} className="w-12 h-16 object-cover rounded"/>
+                    <div>
+                        <p className="font-medium">{product.title}</p>
+                        <p className="text-sm text-text-muted">{product.author}</p>
+                    </div>
+                  </td>
+                  <td className="p-4 text-text-muted">{product.category}</td>
+                  <td className="p-4">{physicalFormat.stock ?? 'N/A'}</td>
+                  <td className="p-4">R$ {physicalFormat.price?.toFixed(2) ?? 'N/A'}</td>
+                  <td className="p-4">
+                    <div className="flex gap-2">
+                      <Button onClick={() => handleOpenEditModal(product)} variant="outline" icon={<Edit size={16} />} className='hover:text-success' title="Editar"></Button>
+                      <Button onClick={() => handleDelete(product.id, product.title)} variant="destructive" icon={<Trash2 size={16} />} className='hover:text-red-400' title="Excluir"></Button>
+                    </div>
+                  </td>
+                </tr>
+              )
+            })}
           </tbody>
         </table>
       </div>
+      <Modal isOpen={isModalOpen} onClose={handleModalClose} title={editingProduct ? 'Editar Produto' : 'Adicionar Produto'}>
+        <ProductForm productToEdit={editingProduct} onSuccess={handleModalClose} />
+      </Modal>
     </div>
   );
 }
