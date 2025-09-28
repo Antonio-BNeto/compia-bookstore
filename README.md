@@ -23,7 +23,7 @@ cd frontend
 
 ## 2. Rodar o docker compose
 
-`` bash
+``` bash
 sudo docker compose up --build
 ```
 ------------------------------------------------------------------------
