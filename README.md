@@ -3,8 +3,10 @@
 Este projeto foi desenvolvido para gerenciar produtos, usuários e
 pedidos **utilizando o `localStorage` do navegador** como base de dados
 simulada.\
-Isso permite rodar a aplicação inteiramente no front-end, sem precisar
-de servidor ou banco de dados externo.
+A aplicação também faz uso da API do Mercado Pago para a realização de pagamento
+e Melhor Envio para o cálculo de fretes.
+
+Tecnologias: React + Spring Boot
 
 ------------------------------------------------------------------------
 
@@ -19,21 +21,11 @@ git clone https://github.com/Antonio-BNeto/compia-bookstore.git
 cd frontend
 ```
 
-### 2. Instalar as dependências
+## 2. Rodar o docker compose
 
-``` bash
-npm install
+`` bash
+sudo docker compose up --build
 ```
-
-### 3. Rodar em ambiente de desenvolvimento
-
-``` bash
-npm run dev
-```
-
-Depois, acesse no navegador o endereço mostrado no terminal (geralmente
-`http://localhost:5173/`).
-
 ------------------------------------------------------------------------
 
 ## 👥 Autores
