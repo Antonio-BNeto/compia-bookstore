@@ -3,7 +3,6 @@ import { useCart } from "../../contexts/cart/CartContext";
 import Button from "../../components/ui/Button";
 import { Trash2, ShoppingBag } from "lucide-react";
 
-// 1. IMPORTAMOS OS NOVOS COMPONENTES
 import CartItem from "../../components/cart/CartItem";
 import CartSummary from "../../components/cart/CartSummary";
 

@@ -3,28 +3,24 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Loader } from "./shared/components/Loader";
 import { ProtectedRoute } from "./shared/router/ProtectedRoute";
 
-// Layouts
 import PublicLayout from "./layouts/PublicLayout";
 import AuthLayout from "./layouts/AuthLayout";
 import AdminLayout from "./layouts/AdminLayout";
 
-// Páginas (lazy loading)
 const Home = lazy(() => import("./pages/public/Home"));
 const ProductDetails = lazy(() => import("./pages/public/ProductDetail"));
 const Cart = lazy(() => import("./pages/public/Cart"));
 const Checkout = lazy(() => import("./pages/public/Checkout"));
 const Orders = lazy(() => import("./pages/public/Orders"));
 const Products = lazy(() => import("./pages/public/Products"));
+const Account = lazy(() => import("./pages/public/Account"));
 
 const Login = lazy(() => import("./pages/auth/Login"));
-const Register = lazy(() => import("./pages/auth/Register"));
-const ForgotPassword = lazy(() => import("./pages/auth/ForgotPassword"));
 
 const Dashboard = lazy(() => import("./pages/admin/Dashboard"));
 const AdminProducts = lazy(() => import("./pages/admin/Products"));
 const AdminOrders = lazy(() => import("./pages/admin/Orders"));
 const Customers = lazy(() => import("./pages/admin/Customers"));
-const Users = lazy(() => import("./pages/admin/Users"));
 
 const NotFound = lazy(() => import("./shared/components/NotFound"));
 
@@ -47,30 +43,23 @@ export default function RoutesWrapper() {
             {/* Orders protegido (só logado) */}
             <Route element={<ProtectedRoute />}>
               <Route path="/orders" element={<Orders />} />
+              <Route path="/account" element={<Account />} />
             </Route>
           </Route>
 
           {/* === ROTAS DE AUTENTICAÇÃO === */}
           <Route path="/auth" element={<AuthLayout />}>
             <Route path="login" element={<Login />} />
-            <Route path="register" element={<Register />} />
-            <Route path="forgot-password" element={<ForgotPassword />} />
           </Route>
 
           {/* === ROTAS PROTEGIDAS (ADMIN) === */}
-          <Route 
-            path="/admin" 
-            element={
-              <ProtectedRoute role="admin">
-                <AdminLayout />
-              </ProtectedRoute>
-            }
-          >
-            <Route index element={<Dashboard />} />
-            <Route path="products" element={<AdminProducts />} />
-            <Route path="orders" element={<AdminOrders />} />
-            <Route path="customers" element={<Customers />} />
-            <Route path="users" element={<Users />} />
+          <Route element={<ProtectedRoute role="admin" />}>
+            <Route path="/admin" element={<AdminLayout />}>
+              <Route index element={<Dashboard />} />
+              <Route path="products" element={<AdminProducts />} />
+              <Route path="orders" element={<AdminOrders />} />
+              <Route path="customers" element={<Customers />} />
+            </Route>
           </Route>
 
           {/* === PÁGINA 404 === */}

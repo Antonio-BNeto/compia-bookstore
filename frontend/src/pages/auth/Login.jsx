@@ -4,7 +4,6 @@ import LoginForm from "../../components/auth/LoginForm";
 export default function Login() {
   const navigate = useNavigate();
 
-  // Função chamada ao logar
   const handleLoginSuccess = (user) => {
     navigate(user.role === "admin" ? "/admin" : "/");
   };
