@@ -50,7 +50,7 @@ export default function CartItem({ item }) {
           icon={<Trash2 size={14} />}
           className="text-text-muted hover:text-error transition-colors text-sm flex items-center gap-1"
         >
-          <Trash2 size={14} /> Remover
+          Remover
         </Button>
       </div>
     </div>

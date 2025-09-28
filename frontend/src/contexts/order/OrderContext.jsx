@@ -1,21 +1,30 @@
 /* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useState, useEffect } from 'react';
-import { api } from "../../services/mockApi"; 
+import { useAuth } from "../auth/AuthContext";
+import { api, initializeDatabase } from "../../services/mockApi"; 
 
 export const OrderContext = createContext();
 
 export function OrderProvider({ children }) {
+  const { user } = useAuth();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   
   useEffect(() => {
+    initializeDatabase(); 
     setOrders(api.getOrders());
     setLoading(false);
   }, []);
 
   const placeOrder = (orderData) => {
-    const newOrder = api.addOrder(orderData);
-    setOrders(prev => [...prev, newOrder]);
+    if (!user) {
+      throw new Error("Usuário não autenticado.");
+    }
+    api.addOrder({
+      ...orderData,
+      userId: user.id,
+    });
+    setOrders(api.getOrders());
   };
 
   const updateOrderStatus = (orderId, newStatus) => {
